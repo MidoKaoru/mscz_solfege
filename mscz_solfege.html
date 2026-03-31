@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuseScore 移動ド自動入力ツール</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
+        .subtitle { text-align: center; font-size: 0.9em; color: #e67e22; font-weight: bold; margin-bottom: 20px; }
+        .description { font-size: 0.9em; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .drop-zone { border: 3px dashed #3498db; border-radius: 10px; padding: 40px; text-align: center; cursor: pointer; background: #ebf5fb; transition: 0.3s; margin-bottom: 20px; }
+        .drop-zone.dragover { background: #d4e6f1; border-color: #2980b9; }
+        .config-section { display: none; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: left; }
+        .config-row { margin-bottom: 15px; }
+        .part-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 5px; max-height: 200px; overflow-y: auto; }
+        button { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        button:hover { background: #219150; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+        .note { font-size: 0.8em; color: #e67e22; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎵 MuseScore 移動ド自動入力ツール</h2>
+    <div class="description">
+        .msczファイルを読み込み、選択したパートの歌詞2行目に「移動ド」を自動追記します。<br>
+        <ul style="margin-top: 5px; padding-left: 20px;">
+            <li><b>和音スキップ:</b> 伴奏などを避け、単旋律のみに付与します。</li>
+            <li><b>高度な省略:</b> 同音の連続は省略し、小節頭やタイ明けの音には正確に付与します。</li>
+            <li><b>臨時記号の再現:</b> 楽譜上の見た目（# / ♭）に準拠した階名を記載します。</li>
+            <li><b>ピボット表記:</b> 転調直後の1音目は <code>(旧→)新</code> で橋渡し表記します。</li>
+        </ul>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+        ここに .mscz ファイルをドロップ<br>またはクリックして選択
+        <input type="file" id="fileInput" accept=".mscz" style="display: none;">
+    </div>
+
+    <div id="configArea" class="config-section">
+        <div class="config-row">
+            <strong>1. 楽曲の基本設定:</strong><br>
+            <label><input type="radio" name="mode" value="major" checked> メジャー (長調)</label>
+            <label style="margin-left:20px;"><input type="radio" name="mode" value="minor"> マイナー (短調)</label>
+        </div>
+
+        <div id="minorOptions" class="config-row" style="display:none; padding-left: 20px; border-left: 3px solid #ddd;">
+            <strong>マイナーの基準音:</strong><br>
+            <label><input type="radio" name="minorBasis" value="la" checked> ラ (自然的短音階基準)</label>
+            <label style="margin-left:20px;"><input type="radio" name="minorBasis" value="do"> ド (並行移動基準)</label>
+        </div>
+
+        <div class="config-row">
+            <strong>2. 対象パートを選択:</strong>
+            <div class="part-list" id="partList"></div>
+        </div>
+
+        <button id="execBtn">移動ドを書き込んでダウンロード</button>
+        <div class="note">※ 実行すると元のファイル名の末尾に "_solfege" が付いたファイルが保存されます。<br>※ 実行前にMuseScore側で「リズムの再グループ化」を行っておくことを推奨します。</div>
+    </div>
+
+    <div id="status"></div>
+</div>
+
+<script>
+    let currentZip = null;
+    let mscxPath = null;
+    let mscxDoc = null;
+    let originalFileName = "";
+
+    // --- UIイベント設定 ---
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const configArea = document.getElementById('configArea');
+    const partList = document.getElementById('partList');
+    const minorOptions = document.getElementById('minorOptions');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => { 
+        e.preventDefault(); dropZone.classList.remove('dragover'); 
+        if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); 
+    });
+    fileInput.addEventListener('change', (e) => {
+        if(e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    document.querySelectorAll('input[name="mode"]').forEach(r => {
+        r.addEventListener('change', (e) => minorOptions.style.display = e.target.value === 'minor' ? 'block' : 'none');
+    });
+
+    async function handleFile(file) {
+        if (!file.name.toLowerCase().endsWith('.mscz')) return alert('.msczファイルを選択してください');
+        originalFileName = file.name.replace('.mscz', '');
+        showStatus('blue', 'ファイルを解析中...');
+        
+        try {
+            currentZip = await JSZip.loadAsync(file);
+            const containerXml = await currentZip.file("META-INF/container.xml").async("string");
+            const containerDoc = new DOMParser().parseFromString(containerXml, "text/xml");
+            mscxPath = containerDoc.getElementsByTagName("rootfile")[0].getAttribute("full-path");
+            const mscxContent = await currentZip.file(mscxPath).async("string");
+            mscxDoc = new DOMParser().parseFromString(mscxContent, "text/xml");
+
+            // パート一覧を抽出
+            partList.innerHTML = '';
+            const parts = mscxDoc.getElementsByTagName('Part');
+            for (let i = 0; i < parts.length; i++) {
+                const name = parts[i].getElementsByTagName('trackName')[0]?.textContent || `パート ${i+1}`;
+                partList.innerHTML += `<label><input type="checkbox" name="targetPart" value="${i}" checked> ${name}</label>`;
+            }
+
+            configArea.style.display = 'block';
+            showStatus('green', '解析完了。設定を選んで実行してください。');
+        } catch (e) {
+            showStatus('red', 'エラー: ファイルが読み込めません。' + e.message);
+        }
+    }
+
+    // --- コア処理 ---
+    document.getElementById('execBtn').addEventListener('click', async () => {
+        const selectedParts = Array.from(document.querySelectorAll('input[name="targetPart"]:checked')).map(cb => parseInt(cb.value));
+        if (selectedParts.length === 0) return alert('対象のパートを1つ以上選択してください');
+
+        const isMinor = document.querySelector('input[name="mode"]:checked').value === 'minor';
+        const minorBasis = document.querySelector('input[name="minorBasis"]:checked').value;
+
+        showStatus('blue', '高度なロジックで移動ドを算出・書き込み中...');
+
+        const staves = mscxDoc.getElementsByTagName('Staff');
+
+        selectedParts.forEach(partIdx => {
+            const targetStaff = staves[partIdx];
+            if (!targetStaff) return;
+
+            let prevKeyAcc = null;
+            let currentKeyAcc = null;
+            let prevSyllable = null;
+            let isTiedFromPrev = false;
+            let needsMeasureStartPrint = false;
+            let isPivotNote = false;
+
+            const measures = targetStaff.getElementsByTagName('Measure');
+            for (let m = 0; m < measures.length; m++) {
+                let isFirstNoteOfMeasure = true;
+
+                // 転調監視 (KeySigの取得)
+                const keySig = measures[m].getElementsByTagName('KeySig')[0];
+                if (keySig) {
+                    const newAcc = parseInt(keySig.getElementsByTagName('accidental')[0]?.textContent || "0");
+                    if (currentKeyAcc === null) {
+                        currentKeyAcc = newAcc; // 曲の最初の調号
+                    } else if (newAcc !== currentKeyAcc) {
+                        prevKeyAcc = currentKeyAcc;
+                        currentKeyAcc = newAcc;
+                        isPivotNote = true; // 転調フラグON
+                    }
+                } else if (currentKeyAcc === null) {
+                    currentKeyAcc = 0; // 調号表記がない場合はCメジャーとして初期化
+                }
+
+                const chords = measures[m].getElementsByTagName('Chord');
+                for (let c = 0; c < chords.length; c++) {
+                    const notes = chords[c].getElementsByTagName('Note');
+                    // 和音はスキップ
+                    if (notes.length !== 1) {
+                        isTiedFromPrev = false;
+                        continue;
+                    }
+
+                    const note = notes[0];
+                    const pitch = parseInt(note.getElementsByTagName('pitch')[0]?.textContent || "0");
+                    const tpc = parseInt(note.getElementsByTagName('tpc')[0]?.textContent || "0");
+
+                    // 自身が次の音へタイで繋がっているか
+                    const tiesToNext = note.getElementsByTagName('Tie').length > 0;
+                    const isTied = isTiedFromPrev; // 自分が前の音からタイで繋がっているか
+
+                    let currentName = getSyllable(pitch, tpc, currentKeyAcc, isMinor, minorBasis);
+                    let textToPrint = "";
+                    let shouldPrint = false;
+
+                    if (isPivotNote && !isTied) {
+                        // 転調後の1音目（ピボット表記）
+                        let oldName = getSyllable(pitch, tpc, prevKeyAcc, isMinor, minorBasis);
+                        textToPrint = `(${oldName}→)${currentName}`;
+                        shouldPrint = true;
+                        isPivotNote = false;
+                        needsMeasureStartPrint = false; // 記載したので保留解除
+                    } else {
+                        textToPrint = currentName;
+
+                        // 同音省略・小節またぎ・タイの判定ロジック
+                        if (isFirstNoteOfMeasure) {
+                            if (isTied) {
+                                needsMeasureStartPrint = true; // 小節頭だがタイなので保留
+                                shouldPrint = false;
+                            } else {
+                                shouldPrint = true; // 小節頭なので無条件で記載
+                                needsMeasureStartPrint = false;
+                            }
+                        } else {
+                            if (isTied) {
+                                shouldPrint = false; // タイで繋がっている音は常に省略
+                            } else if (needsMeasureStartPrint) {
+                                shouldPrint = true;  // タイ明けの最初の音（保留消化）
+                                needsMeasureStartPrint = false;
+                            } else if (currentName !== prevSyllable) {
+                                shouldPrint = true;  // 音程が変わった
+                            }
+                        }
+                    }
+
+                    if (shouldPrint) {
+                        addLyrics(mscxDoc, chords[c], textToPrint);
+                    }
+
+                    prevSyllable = currentName;
+                    isTiedFromPrev = tiesToNext;
+                    isFirstNoteOfMeasure = false;
+                }
+            }
+        });
+
+        // 保存・ダウンロード処理
+        const serializer = new XMLSerializer();
+        const updatedXml = serializer.serializeToString(mscxDoc);
+        currentZip.file(mscxPath, updatedXml);
+        
+        const blob = await currentZip.generateAsync({type:"blob"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${originalFileName}_solfege.mscz`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showStatus('green', '🎉 処理が完了し、ダウンロードを開始しました！');
+    });
+
+    // --- 音程から階名を算出する関数 ---
+    function getSyllable(pitch, tpc, keyAcc, isMinor, minorBasis) {
+        // MuseScore TPCの仕組みを活用し、#かbかの表記を完全に再現する
+        let rootTpc = 14 + keyAcc; // C(14) を基準に調号シフト
+        
+        if (isMinor && minorBasis === 'do') {
+            rootTpc += 3; // マイナーでド基準の場合、主音を短3度上げる
+        }
+
+        let diff = tpc - rootTpc;
+        
+        // 相対TPCから階名への完全マッピング（異名同音も見た目通りに取得）
+        const tpcDiffMap = {
+            0: "ド", 2: "レ", 4: "ミ", "-1": "ファ", 1: "ソ", 3: "ラ", 5: "シ",
+            7: "ド#", 9: "レ#", 11: "ミ#", 6: "ファ#", 8: "ソ#", 10: "ラ#", 12: "シ#",
+            "-5": "レ♭", "-3": "ミ♭", "-8": "ファ♭", "-6": "ソ♭", "-4": "ラ♭", "-2": "シ♭", "-7": "ド♭"
+        };
+
+        if (tpcDiffMap[diff]) {
+            return tpcDiffMap[diff];
+        }
+
+        // 念のためのフォールバック (極端なダブルシャープ等をPitchで推測)
+        let rootPitch = (keyAcc * 7) % 12;
+        if (rootPitch < 0) rootPitch += 12;
+        if (isMinor && minorBasis === 'do') rootPitch = (rootPitch - 3 + 12) % 12;
+        
+        let relPitch = (pitch - rootPitch + 120) % 12;
+        let useFlat = keyAcc < 0 || (keyAcc === 0 && (tpc < 14 && tpc !== 6 && tpc !== 1));
+        const sSharp = ["ド", "ド#", "レ", "レ#", "ミ", "ファ", "ファ#", "ソ", "ソ#", "ラ", "ラ#", "シ"];
+        const sFlat  = ["ド", "レ♭", "レ", "ミ♭", "ミ", "ファ", "ソ♭", "ソ", "ラ♭", "ラ", "シ♭", "シ"];
+        
+        return useFlat ? sFlat[relPitch] : sSharp[relPitch];
+    }
+
+    // --- XMLに歌詞ノードを追加する関数 ---
+    function addLyrics(xmlDoc, chordNode, text) {
+        const lyrics = xmlDoc.createElement('Lyrics');
+        const no = xmlDoc.createElement('no');
+        no.textContent = "1"; // 0が1行目、1が2行目
+        const textNode = xmlDoc.createElement('text');
+        textNode.textContent = text;
+        
+        lyrics.appendChild(no);
+        lyrics.appendChild(textNode);
+        chordNode.appendChild(lyrics);
+    }
+
+    function showStatus(color, msg) {
+        const s = document.getElementById('status');
+        s.style.color = color;
+        s.innerText = msg;
+    }
+</script>
+</body>
+</html>

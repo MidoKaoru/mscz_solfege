@@ -7,336 +7,227 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; color: #333; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
-        .subtitle { text-align: center; font-size: 0.9em; color: #e67e22; font-weight: bold; margin-bottom: 20px; }
         .description { font-size: 0.9em; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .drop-zone { border: 3px dashed #3498db; border-radius: 10px; padding: 40px; text-align: center; cursor: pointer; background: #ebf5fb; transition: 0.3s; margin-bottom: 20px; }
+        .drop-zone { border: 3px dashed #3498db; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: #ebf5fb; transition: 0.3s; margin-bottom: 15px; }
         .drop-zone.dragover { background: #d4e6f1; border-color: #2980b9; }
-        .config-section { display: none; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: left; }
-        .config-row { margin-bottom: 15px; }
-        .modulation-block { margin-bottom: 10px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .modulation-title { font-weight: bold; color: #2980b9; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .minor-options { display: none; margin-top: 10px; padding-left: 15px; border-left: 3px solid #e74c3c; font-size: 0.9em; }
-        .part-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 5px; max-height: 200px; overflow-y: auto; font-size: 0.95em; }
-        button { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 20px; }
-        button:hover { background: #219150; }
-        #status { margin-top: 15px; text-align: center; font-weight: bold; }
-        .note { font-size: 0.8em; color: #e67e22; margin-top: 10px; }
+        
+        /* ステータス表示のCSSを調整（下に余白を持たせる） */
+        #status { text-align: center; font-weight: bold; margin-bottom: 20px; min-height: 1.5em; }
+        
+        .config-section { display: none; }
+        .panel { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee; }
+        .panel-title { font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .bulk-actions { font-size: 0.8em; font-weight: normal; }
+        .bulk-btn { padding: 4px 10px; cursor: pointer; background: #fff; border: 1px solid #ccc; border-radius: 4px; margin-left: 5px; }
+        .bulk-btn:hover { background: #f0f0f0; }
+        .modulation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+        .modulation-item { background: white; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9em; }
+        .part-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.9em; }
+        .global-settings { background: #fff8e1; border: 1px solid #ffe082; }
+        button#execBtn { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 10px; }
+        button#execBtn:hover { background: #219150; }
+        label { cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>🎵 MuseScore 移動ド自動入力ツール</h2>
-    <div class="subtitle">転調セクション個別設定・高度浄書版</div>
     <div class="description">
-        .msczファイルを読み込み、選択した楽器パートの歌詞2行目に「移動ド」を自動追記します。<br>
-        ファイル読み込み時に転調箇所を自動スキャンし、区間ごとに長調/短調を設定できます。
+        短調の場合「ドレミ式/ラシド式」および「変名表記」を選択できます。<br>
     </div>
 
     <div class="drop-zone" id="dropZone">
-        ここに .mscz ファイルをドロップ<br>またはクリックして選択
+        ここに .mscz ファイルをドロップ または クリックして選択
         <input type="file" id="fileInput" accept=".mscz" style="display: none;">
     </div>
 
+    <div id="status"></div>
+
     <div id="configArea" class="config-section">
-        <div class="config-row">
-            <strong>1. 調性の設定 (転調区間ごと):</strong>
-            <div id="keyConfigList" style="margin-top: 10px;"></div>
+        <div class="panel">
+            <div class="panel-title">
+                1. 各区間の調性設定
+                <div class="bulk-actions">
+                    一括設定：
+                    <button class="bulk-btn" onclick="setAllModes('major')">すべて長調</button>
+                    <button class="bulk-btn" onclick="setAllModes('minor')">すべて短調</button>
+                </div>
+            </div>
+            <div id="keyConfigList" class="modulation-grid"></div>
         </div>
 
-        <div class="config-row">
-            <strong>2. 対象の楽器パートを選択:</strong>
+        <div class="panel">
+            <div class="panel-title">2. 対象の楽器を選択</div>
             <div class="part-list" id="partList"></div>
         </div>
 
-        <button id="execBtn">移動ドを書き込んでダウンロード</button>
-        <div class="note">※ 実行すると元のファイル名の末尾に "_solfege" が付いたファイルが保存されます。</div>
-    </div>
+        <div class="panel global-settings">
+            <div class="panel-title">3. 短調の読み方・表記ルール (一括設定)</div>
+            <div style="font-size: 0.9em;">
+                <strong>▼ 短調の主音を何と呼ぶか</strong><br>
+                <label><input type="radio" name="solfegeSystem" value="do" checked> ドレミ式 (主音=ド)</label>
+                <label style="margin-left:20px;"><input type="radio" name="solfegeSystem" value="la"> ラシド式 (主音=ラ)</label>
+                <br><br>
+                <strong>▼ 派生音の表記形式</strong><br>
+                <label><input type="radio" name="namingStyle" value="suffix" checked> 記号式 (ファ#, シb...)</label>
+                <label style="margin-left:20px;"><input type="radio" name="namingStyle" value="hemi" > 変名式 (フィ, テ...)</label>
+            </div>
+        </div>
 
-    <div id="status"></div>
+        <button id="execBtn">移動ドを書き込んでダウンロード</button>
+    </div>
 </div>
 
 <script>
-    let currentZip = null;
-    let mscxPath = null;
-    let mscxDoc = null;
-    let originalFileName = "";
-    let modulations = []; // 転調情報を格納する配列
+    let currentZip = null, mscxPath = null, mscxDoc = null, originalFileName = "", modulations = [];
 
-    // --- UIイベント設定 ---
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const configArea = document.getElementById('configArea');
-    const partList = document.getElementById('partList');
-    const keyConfigList = document.getElementById('keyConfigList');
+    const namingSuffix = {
+        0: "ド", 2: "レ", 4: "ミ", "-1": "ファ", 1: "ソ", 3: "ラ", 5: "シ",
+        7: "ド#", 9: "レ#", 11: "ミ#", 6: "ファ#", 8: "ソ#", 10: "ラ#", 12: "シ#",
+        "-5": "レ♭", "-3": "ミ♭", "-8": "ファ♭", "-6": "ソ♭", "-4": "ラ♭", "-2": "シ♭", "-7": "ド♭"
+    };
 
-    dropZone.addEventListener('click', () => fileInput.click());
-    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-    dropZone.addEventListener('drop', (e) => { 
-        e.preventDefault(); dropZone.classList.remove('dragover'); 
-        if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); 
-    });
-    fileInput.addEventListener('change', (e) => {
-        if(e.target.files.length) handleFile(e.target.files[0]);
-    });
+    const namingHemi = {
+        0: "ド", 2: "レ", 4: "ミ", "-1": "ファ", 1: "ソ", 3: "ラ", 5: "シ",
+        7: "ディ", 9: "リ", 11: "ミ", 6: "フィ", 8: "シ", 10: "リ", 12: "ド",
+        "-5": "ラ", "-3": "メ", "-8": "ミ", "-6": "セ", "-4": "レ", "-2": "テ", "-7": "シ"
+    };
+
+    const dropZone = document.getElementById('dropZone'), fileInput = document.getElementById('fileInput');
+    dropZone.onclick = () => fileInput.click();
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    dropZone.ondrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); };
+    fileInput.onchange = (e) => handleFile(e.target.files[0]);
+
+    // 調性の一括設定関数
+    function setAllModes(mode) {
+        modulations.forEach((_, i) => {
+            const radio = document.querySelector(`input[name="mode_${i}"][value="${mode}"]`);
+            if (radio) radio.checked = true;
+        });
+    }
 
     async function handleFile(file) {
-        if (!file.name.toLowerCase().endsWith('.mscz')) return alert('.msczファイルを選択してください');
+        if (!file || !file.name.endsWith('.mscz')) return;
         originalFileName = file.name.replace('.mscz', '');
-        showStatus('blue', 'ファイルを解析中...');
+        showStatus('blue', '解析中...');
         
         try {
             currentZip = await JSZip.loadAsync(file);
             const containerXml = await currentZip.file("META-INF/container.xml").async("string");
             const containerDoc = new DOMParser().parseFromString(containerXml, "text/xml");
             mscxPath = containerDoc.getElementsByTagName("rootfile")[0].getAttribute("full-path");
-            const mscxContent = await currentZip.file(mscxPath).async("string");
-            mscxDoc = new DOMParser().parseFromString(mscxContent, "text/xml");
+            mscxDoc = new DOMParser().parseFromString(await currentZip.file(mscxPath).async("string"), "text/xml");
 
-            // 1. 楽器名の抽出とUI生成
             partList.innerHTML = '';
+            const musicStaves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
             const parts = mscxDoc.getElementsByTagName('Part');
             for (let i = 0; i < parts.length; i++) {
-                let instrName = "";
-                const instrTag = parts[i].getElementsByTagName('Instrument')[0];
-                if (instrTag) {
-                    instrName = instrTag.getElementsByTagName('longName')[0]?.textContent || 
-                                instrTag.getElementsByTagName('trackName')[0]?.textContent;
-                }
-                if (!instrName) {
-                    instrName = parts[i].getElementsByTagName('trackName')[0]?.textContent || `パート ${i+1}`;
-                }
-                // HTMLタグ等が混ざっている場合を考慮し、テキストのみを抽出・整形
-                instrName = instrName.replace(/<[^>]*>?/gm, '').trim() || `楽器 ${i+1}`;
-                
-                partList.innerHTML += `<label><input type="checkbox" name="targetPart" value="${i}" checked> ${instrName}</label>`;
+                let name = parts[i].getElementsByTagName('longName')[0]?.textContent || parts[i].getElementsByTagName('trackName')[0]?.textContent || `Part ${i+1}`;
+                name = name.replace(/<[^>]*>?/gm, '').trim();
+                partList.innerHTML += `<label><input type="checkbox" name="targetPart" value="${i}" checked> ${name}</label>`;
             }
 
-            // 2. 転調箇所（KeySigの変化）の事前スキャン
             modulations = [];
-            const firstStaffMeasures = mscxDoc.getElementsByTagName('Staff')[0].getElementsByTagName('Measure');
-            let currentAcc = null;
-
-            for (let m = 0; m < firstStaffMeasures.length; m++) {
-                const keySig = firstStaffMeasures[m].getElementsByTagName('KeySig')[0];
-                if (keySig) {
-                    const acc = parseInt(keySig.getElementsByTagName('accidental')[0]?.textContent || "0");
-                    if (currentAcc === null || currentAcc !== acc) {
-                        currentAcc = acc;
-                        modulations.push({ measureIdx: m, label: m === 0 ? "最初から" : `${m + 1}小節目から` });
-                    }
-                } else if (m === 0 && currentAcc === null) {
-                    currentAcc = 0; // 調号指定がない場合はCメジャーとして初期化
-                    modulations.push({ measureIdx: m, label: "最初から" });
+            const measures = musicStaves[0].getElementsByTagName('Measure');
+            let lastAcc = null;
+            for (let m = 0; m < measures.length; m++) {
+                const keySig = measures[m].getElementsByTagName('KeySig')[0];
+                const acc = keySig ? parseInt(keySig.getElementsByTagName('accidental')[0]?.textContent || "0") : (m === 0 ? 0 : null);
+                if (acc !== null && acc !== lastAcc) {
+                    lastAcc = acc;
+                    modulations.push({ idx: m, label: m === 0 ? "最初" : `${m+1}小節` });
                 }
             }
 
-            // 3. 転調ごとの設定UIを動的生成
-            keyConfigList.innerHTML = '';
-            modulations.forEach((mod, i) => {
-                keyConfigList.innerHTML += `
-                    <div class="modulation-block">
-                        <div class="modulation-title">📍 ${mod.label}</div>
-                        <label><input type="radio" name="mode_${i}" value="major" checked onchange="document.getElementById('minorOpt_${i}').style.display='none'"> メジャー (長調)</label>
-                        <label style="margin-left:20px;"><input type="radio" name="mode_${i}" value="minor" onchange="document.getElementById('minorOpt_${i}').style.display='block'"> マイナー (短調)</label>
-                        
-                        <div id="minorOpt_${i}" class="minor-options">
-                            <strong>マイナー基準:</strong>
-                            <label style="margin-left:10px;"><input type="radio" name="basis_${i}" value="la" checked> ラ (自然的短音階)</label>
-                            <label style="margin-left:15px;"><input type="radio" name="basis_${i}" value="do"> ド (並行移動)</label>
-                        </div>
-                    </div>
-                `;
-            });
+            keyConfigList.innerHTML = modulations.map((m, i) => `
+                <div class="modulation-item">
+                    <b>📍 ${m.label}</b><br>
+                    <label><input type="radio" name="mode_${i}" value="major" checked> 長調</label>
+                    <label style="margin-left:10px;"><input type="radio" name="mode_${i}" value="minor"> 短調</label>
+                </div>
+            `).join('');
 
-            configArea.style.display = 'block';
-            showStatus('green', '解析完了。転調区間ごとの設定を選んで実行してください。');
-        } catch (e) {
-            showStatus('red', 'エラー: ファイルが読み込めません。' + e.message);
-        }
+            document.getElementById('configArea').style.display = 'block';
+            showStatus('green', 'ファイルを読み込みました。');
+        } catch (e) { showStatus('red', 'エラー: ' + e.message); }
     }
 
-    // --- コア処理 ---
-    document.getElementById('execBtn').addEventListener('click', async () => {
+    document.getElementById('execBtn').onclick = async () => {
         const selectedParts = Array.from(document.querySelectorAll('input[name="targetPart"]:checked')).map(cb => parseInt(cb.value));
-        if (selectedParts.length === 0) return alert('対象の楽器パートを1つ以上選択してください');
+        const system = document.querySelector('input[name="solfegeSystem"]:checked').value;
+        const naming = document.querySelector('input[name="namingStyle"]:checked').value;
+        const userConfigs = modulations.map((_, i) => document.querySelector(`input[name="mode_${i}"]:checked`).value === 'minor');
 
-        // ユーザーが設定した各区間のメジャー/マイナー設定を配列で取得
-        const userConfigs = modulations.map((_, i) => ({
-            isMinor: document.querySelector(`input[name="mode_${i}"]:checked`).value === 'minor',
-            minorBasis: document.querySelector(`input[name="basis_${i}"]:checked`).value
-        }));
+        const musicStaves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
 
-        showStatus('blue', '移動ドを算出・書き込み中...');
-        const staves = mscxDoc.getElementsByTagName('Staff');
+        selectedParts.forEach(idx => {
+            const staff = musicStaves[idx];
+            let prevAcc = null, currAcc = 0, prevSyl = null, tied = false, pending = false, pivot = false;
 
-        selectedParts.forEach(partIdx => {
-            const targetStaff = staves[partIdx];
-            if (!targetStaff) return;
-
-            let prevKeyAcc = null;
-            let currentKeyAcc = null;
-            let prevSyllable = null;
-            let isTiedFromPrev = false;
-            let needsMeasureStartPrint = false;
-            let isPivotNote = false;
-
-            const measures = targetStaff.getElementsByTagName('Measure');
-            for (let m = 0; m < measures.length; m++) {
-                // 現在の小節(m)が、どの転調区間に属しているかを判定
-                let configIdx = 0;
-                for (let i = modulations.length - 1; i >= 0; i--) {
-                    if (m >= modulations[i].measureIdx) {
-                        configIdx = i;
-                        break;
-                    }
-                }
-                const isMinor = userConfigs[configIdx].isMinor;
-                const minorBasis = userConfigs[configIdx].minorBasis;
-
-                let isFirstNoteOfMeasure = true;
-
-                // 転調監視 (小節内のKeySigタグ)
-                const keySig = measures[m].getElementsByTagName('KeySig')[0];
+            const ms = staff.getElementsByTagName('Measure');
+            for (let m = 0; m < ms.length; m++) {
+                const modIdx = modulations.reduce((p, c, i) => (m >= c.idx ? i : p), 0);
+                const isMinor = userConfigs[modIdx];
+                const keySig = ms[m].getElementsByTagName('KeySig')[0];
                 if (keySig) {
-                    const newAcc = parseInt(keySig.getElementsByTagName('accidental')[0]?.textContent || "0");
-                    if (currentKeyAcc === null) {
-                        currentKeyAcc = newAcc;
-                    } else if (newAcc !== currentKeyAcc) {
-                        prevKeyAcc = currentKeyAcc;
-                        currentKeyAcc = newAcc;
-                        isPivotNote = true; // 転調フラグON
-                    }
-                } else if (currentKeyAcc === null) {
-                    currentKeyAcc = 0;
+                    const acc = parseInt(keySig.getElementsByTagName('accidental')[0]?.textContent || "0");
+                    if (acc !== currAcc) { prevAcc = currAcc; currAcc = acc; pivot = (m > 0); }
                 }
 
-                const chords = measures[m].getElementsByTagName('Chord');
+                const chords = ms[m].getElementsByTagName('Chord');
                 for (let c = 0; c < chords.length; c++) {
                     const notes = chords[c].getElementsByTagName('Note');
-                    if (notes.length !== 1) {
-                        isTiedFromPrev = false; // 和音はスキップ
-                        continue;
+                    if (notes.length !== 1) { tied = false; continue; }
+
+                    const pitch = parseInt(notes[0].getElementsByTagName('pitch')[0].textContent);
+                    const tpc = parseInt(notes[0].getElementsByTagName('tpc')[0].textContent);
+                    const nextTied = notes[0].getElementsByTagName('Tie').length > 0;
+
+                    const getS = (p, t, a, mFlag) => {
+                        let rootTpc = 14 + a;
+                        if (mFlag && system === 'do') rootTpc += 3;
+                        const diff = t - rootTpc;
+                        const map = (naming === 'suffix') ? namingSuffix : namingHemi;
+                        return map[diff] || "?";
+                    };
+
+                    let syl = getS(pitch, tpc, currAcc, isMinor);
+                    let printTxt = syl;
+                    let doPrint = false;
+
+                    if (pivot && !tied) {
+                        const prevIsMinor = userConfigs[Math.max(0, modIdx - 1)];
+                        printTxt = `(${getS(pitch, tpc, prevAcc, prevIsMinor)}→)${syl}`;
+                        doPrint = true; pivot = false; pending = false;
+                    } else if (c === 0) {
+                        if (tied) { pending = true; } else { doPrint = true; pending = false; }
+                    } else if (!tied) {
+                        if (pending || syl !== prevSyl) { doPrint = true; pending = false; }
                     }
 
-                    const note = notes[0];
-                    const pitch = parseInt(note.getElementsByTagName('pitch')[0]?.textContent || "0");
-                    const tpc = parseInt(note.getElementsByTagName('tpc')[0]?.textContent || "0");
-
-                    const tiesToNext = note.getElementsByTagName('Tie').length > 0;
-                    const isTied = isTiedFromPrev;
-
-                    let currentName = getSyllable(pitch, tpc, currentKeyAcc, isMinor, minorBasis);
-                    let textToPrint = "";
-                    let shouldPrint = false;
-
-                    if (isPivotNote && !isTied) {
-                        // 橋渡し表記：旧キーの構成（1つ前の転調区間）を使って旧階名を算出
-                        const prevConfigIdx = Math.max(0, configIdx - 1);
-                        const prevIsMinor = userConfigs[prevConfigIdx].isMinor;
-                        const prevMinorBasis = userConfigs[prevConfigIdx].minorBasis;
-                        
-                        let oldName = getSyllable(pitch, tpc, prevKeyAcc, prevIsMinor, prevMinorBasis);
-                        textToPrint = `(${oldName}→)${currentName}`;
-                        shouldPrint = true;
-                        isPivotNote = false;
-                        needsMeasureStartPrint = false;
-                    } else {
-                        textToPrint = currentName;
-
-                        if (isFirstNoteOfMeasure) {
-                            if (isTied) {
-                                needsMeasureStartPrint = true;
-                                shouldPrint = false;
-                            } else {
-                                shouldPrint = true;
-                                needsMeasureStartPrint = false;
-                            }
-                        } else {
-                            if (isTied) {
-                                shouldPrint = false;
-                            } else if (needsMeasureStartPrint) {
-                                shouldPrint = true;
-                                needsMeasureStartPrint = false;
-                            } else if (currentName !== prevSyllable) {
-                                shouldPrint = true;
-                            }
-                        }
-                    }
-
-                    if (shouldPrint) {
-                        addLyrics(mscxDoc, chords[c], textToPrint);
-                    }
-
-                    prevSyllable = currentName;
-                    isTiedFromPrev = tiesToNext;
-                    isFirstNoteOfMeasure = false;
+                    if (doPrint) addLyrics(mscxDoc, chords[c], printTxt);
+                    prevSyl = syl; tied = nextTied;
                 }
             }
         });
 
-        const serializer = new XMLSerializer();
-        const updatedXml = serializer.serializeToString(mscxDoc);
-        currentZip.file(mscxPath, updatedXml);
-        
-        const blob = await currentZip.generateAsync({type:"blob"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${originalFileName}_solfege.mscz`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const blob = await currentZip.file(mscxPath, new XMLSerializer().serializeToString(mscxDoc)).generateAsync({type:"blob"});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `${originalFileName}_solfege.mscz`; a.click();
+        showStatus('green', '完了しました！');
+    };
 
-        showStatus('green', '🎉 処理が完了し、ダウンロードを開始しました！');
-    });
-
-    // --- 音程から階名を算出する関数 ---
-    function getSyllable(pitch, tpc, keyAcc, isMinor, minorBasis) {
-        let rootTpc = 14 + keyAcc;
-        if (isMinor && minorBasis === 'do') rootTpc += 3;
-
-        let diff = tpc - rootTpc;
-        const tpcDiffMap = {
-            0: "ド", 2: "レ", 4: "ミ", "-1": "ファ", 1: "ソ", 3: "ラ", 5: "シ",
-            7: "ド#", 9: "レ#", 11: "ミ#", 6: "ファ#", 8: "ソ#", 10: "ラ#", 12: "シ#",
-            "-5": "レ♭", "-3": "ミ♭", "-8": "ファ♭", "-6": "ソ♭", "-4": "ラ♭", "-2": "シ♭", "-7": "ド♭"
-        };
-
-        if (tpcDiffMap[diff]) return tpcDiffMap[diff];
-
-        let rootPitch = (keyAcc * 7) % 12;
-        if (rootPitch < 0) rootPitch += 12;
-        if (isMinor && minorBasis === 'do') rootPitch = (rootPitch - 3 + 12) % 12;
-        
-        let relPitch = (pitch - rootPitch + 120) % 12;
-        let useFlat = keyAcc < 0 || (keyAcc === 0 && (tpc < 14 && tpc !== 6 && tpc !== 1));
-        const sSharp = ["ド", "ド#", "レ", "レ#", "ミ", "ファ", "ファ#", "ソ", "ソ#", "ラ", "ラ#", "シ"];
-        const sFlat  = ["ド", "レ♭", "レ", "ミ♭", "ミ", "ファ", "ソ♭", "ソ", "ラ♭", "ラ", "シ♭", "シ"];
-        
-        return useFlat ? sFlat[relPitch] : sSharp[relPitch];
+    function addLyrics(xml, node, txt) {
+        const lyr = xml.createElement('Lyrics'), no = xml.createElement('no'), t = xml.createElement('text');
+        no.textContent = "1"; t.textContent = txt;
+        lyr.appendChild(no); lyr.appendChild(t); node.appendChild(lyr);
     }
-
-    // --- XMLに歌詞ノードを追加する関数 ---
-    function addLyrics(xmlDoc, chordNode, text) {
-        const lyrics = xmlDoc.createElement('Lyrics');
-        const no = xmlDoc.createElement('no');
-        no.textContent = "1";
-        const textNode = xmlDoc.createElement('text');
-        textNode.textContent = text;
-        
-        lyrics.appendChild(no);
-        lyrics.appendChild(textNode);
-        chordNode.appendChild(lyrics);
-    }
-
-    function showStatus(color, msg) {
-        const s = document.getElementById('status');
-        s.style.color = color;
-        s.innerText = msg;
-    }
+    function showStatus(c, m) { const s = document.getElementById('status'); s.style.color = c; s.innerText = m; }
 </script>
 </body>
 </html>

@@ -23,36 +23,37 @@
         .part-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.9em; }
         .global-settings { background: #fff8e1; border: 1px solid #ffe082; }
         
+        /* 範囲指定UI */
+        .range-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .range-input { width: 70px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        .range-btn { padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
+        .range-btn:hover { background: #c0392b; }
+        .add-range-btn { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-top: 5px; }
+        .add-range-btn:hover { background: #2980b9; }
+
         /* ピアノ鍵盤UI (F〜B構成) */
         .custom-map-area { display: none; margin-top: 15px; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
         .piano-wrapper { position: relative; width: 100%; max-width: 800px; height: 180px; display: flex; margin: 20px auto; border: 2px solid #333; border-radius: 4px; border-top: 10px solid #333; }
-        
-        /* 白鍵 (全11鍵) */
         .white-key { flex: 1; border-right: 1px solid #ccc; background: #fff; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 10px; z-index: 1; }
         .white-key:last-child { border-right: none; }
         .white-key.disabled { background: #e8ecef; }
         .wk-label { font-size: 0.7em; color: #888; margin-bottom: 5px; font-weight: bold; text-align: center;}
         .wk-label.disabled { color: #bbb; font-size: 0.8em;}
         .white-key input { width: 45px; text-align: center; border: 1px solid #aaa; border-radius: 3px; font-weight: bold; padding: 3px; }
-        
-        /* 黒鍵 */
         .black-key { position: absolute; width: calc(100% / 11 * 0.7); height: 60%; background: #222; z-index: 2; border-radius: 0 0 4px 4px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 8px; gap: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
         .black-key.disabled { background: #7f8c8d; box-shadow: none; }
         .black-key input { width: 38px; text-align: center; border: none; border-radius: 2px; background: #eee; color: #333; font-size: 0.8em; font-weight: bold; padding: 2px; }
         
-        /* 各黒鍵の配置位置 (N番目の白鍵の右側境界線を中心に配置) */
-        .bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } /* F# */
-        .bk-d2 { left: calc(100% / 11 * 2 - (100% / 11 * 0.35)); } /* G# */
-        .bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } /* A# (入力1) */
-        /* BとCの間は黒鍵なし */
-        .bk-2  { left: calc(100% / 11 * 5 - (100% / 11 * 0.35)); } /* C# (入力2) */
-        .bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } /* D# (入力3) */
-        /* EとFの間は黒鍵なし */
-        .bk-4  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } /* F# (入力4) */
-        .bk-5  { left: calc(100% / 11 * 9 - (100% / 11 * 0.35)); } /* G# (入力5) */
-        .bk-d3 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); } /* 高音A# */
+        .bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } 
+        .bk-d2 { left: calc(100% / 11 * 2 - (100% / 11 * 0.35)); } 
+        .bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } 
+        .bk-2  { left: calc(100% / 11 * 5 - (100% / 11 * 0.35)); } 
+        .bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } 
+        .bk-4  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } 
+        .bk-5  { left: calc(100% / 11 * 9 - (100% / 11 * 0.35)); } 
+        .bk-d3 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); }
 
-        button#execBtn { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 10px; }
+        button#execBtn { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 20px; }
         button#execBtn:hover { background: #219150; }
         .json-actions { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; display: flex; justify-content: center; gap: 15px; }
         label { cursor: pointer; }
@@ -62,7 +63,7 @@
 
 <div class="container">
     <h2>🎵 MuseScore 移動ド自動入力ツール</h2>
-    <div class="description">短調の場合「ドレミ式/ラシド式」および「変名表記」を選択できます。</div>
+    <div class="description">短調の場合「ドレミ式/ラシド式」および「変名表記」を選択できます。部分適用にも対応。</div>
 
     <div class="drop-zone" id="dropZone">
         ここに .mscz ファイルをドロップ または クリックして選択
@@ -72,9 +73,22 @@
     <div id="status"></div>
 
     <div id="configArea" class="config-section">
+        
+        <div class="panel">
+            <div class="panel-title">1. 適用範囲の指定</div>
+            <div id="rangeContainer">
+                <div class="range-row">
+                    <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜 
+                    <input type="number" class="range-input" placeholder="終了" min="1"> 小節目
+                </div>
+            </div>
+            <button class="add-range-btn" onclick="addRangeRow()">＋ 範囲を追加</button>
+            <p style="font-size: 0.8em; color: #666; margin-top: 8px;">※ 空欄のままだと「最初から最後まで」全範囲に適用されます。</p>
+        </div>
+
         <div class="panel">
             <div class="panel-title">
-                1. 各区間の調性設定
+                2. 各区間の調性設定
                 <div class="bulk-actions">
                     一括設定：<button class="bulk-btn" onclick="setAllModes('major')">すべて長調</button><button class="bulk-btn" onclick="setAllModes('minor')">すべて短調</button>
                 </div>
@@ -83,12 +97,12 @@
         </div>
 
         <div class="panel">
-            <div class="panel-title">2. 対象の楽器を選択</div>
+            <div class="panel-title">3. 対象の楽器を選択</div>
             <div class="part-list" id="partList"></div>
         </div>
 
         <div class="panel global-settings">
-            <div class="panel-title">3. 短調の読み方・表記ルール (一括設定)</div>
+            <div class="panel-title">4. 短調の読み方・表記ルール (一括設定)</div>
             <div style="font-size: 0.9em;">
                 <strong>▼ 短調の主音を何と呼ぶか</strong><br>
                 <label><input type="radio" name="solfegeSystem" value="la" checked> ラシド式 (主音=ラ)</label>
@@ -108,8 +122,7 @@
             <div id="customMapArea" class="custom-map-area">
                 <strong>🎹 カスタムマッピング定義 (ピアノ鍵盤)</strong>
                 <p style="font-size: 0.8em; color: #666; margin: 5px 0 10px;">
-                    短調のスケール（白鍵のA〜G）を基準に、黒鍵を含む17枠を直感的に設定できます。<br>
-                    上のラジオボタンを切り替えると、選択した方式の初期値が自動入力されます。
+                    短調のスケール（白鍵のA〜G）を基準に、黒鍵を含む17枠を直感的に設定できます。
                 </p>
                 
                 <div class="piano-wrapper">
@@ -127,12 +140,15 @@
                     <div class="white-key disabled"><span class="wk-label disabled">A</span></div>
                     <div class="white-key disabled"><span class="wk-label disabled">B</span></div>
 
-                    <div class="black-key disabled bk-d1"></div> <div class="black-key disabled bk-d2"></div> <div class="black-key bk-1"><input type="text" id="b1_s" title="シャープ系(#1)"><input type="text" id="b1_f" title="フラット系(b2)"></div>
+                    <div class="black-key disabled bk-d1"></div> 
+                    <div class="black-key disabled bk-d2"></div> 
+                    <div class="black-key bk-1"><input type="text" id="b1_s" title="シャープ系(#1)"><input type="text" id="b1_f" title="フラット系(b2)"></div>
                     <div class="black-key bk-2"><input type="text" id="b2_s" title="シャープ系(M3)"><input type="text" id="b2_f" title="フラット系(dim4)"></div>
                     <div class="black-key bk-3"><input type="text" id="b3_s" title="シャープ系(#4)"><input type="text" id="b3_f" title="フラット系(b5)"></div>
                     <div class="black-key bk-4"><input type="text" id="b4_s" title="シャープ系(M6)"><input type="text" id="b4_f" title="フラット系(dim7)"></div>
                     <div class="black-key bk-5"><input type="text" id="b5_s" title="シャープ系(M7)"><input type="text" id="b5_f" title="フラット系(dim8)"></div>
-                    <div class="black-key disabled bk-d3"></div> </div>
+                    <div class="black-key disabled bk-d3"></div>
+                </div>
 
                 <div class="json-actions">
                     <button type="button" class="bulk-btn" style="padding: 8px 15px;" onclick="downloadConfig()">💾 設定を保存 (.json)</button>
@@ -150,24 +166,57 @@
     let currentZip = null, mscxPath = null, mscxDoc = null, originalFileName = "", modulations = [];
     let customDict = {};
 
-    // 17個の入力IDとTPCの紐付けマッピング
     const tpcToUI = {
         0: 'w1', 2: 'w2', '-3': 'w3', '-1': 'w4', 1: 'w5', '-4': 'w6', '-2': 'w7',
         7: 'b1_s', '-5': 'b1_f',
-        4: 'b2_s', '-8': 'b2_f', // M3, dim4
+        4: 'b2_s', '-8': 'b2_f', 
         6: 'b3_s', '-6': 'b3_f',
-        3: 'b4_s', '-10': 'b4_f', // M6, dim7
-        5: 'b5_s', '-9': 'b5_f', // M7, dim8
-        9: 'w3', 11: 'w6', '-7': 'w2', '-11': 'w5' // 異名同音の白鍵フォールバック
+        3: 'b4_s', '-10': 'b4_f', 
+        5: 'b5_s', '-9': 'b5_f', 
+        9: 'w3', 11: 'w6', '-7': 'w2', '-11': 'w5' 
     };
 
-    // 初期値辞書 (現場仕様へチューニング済み)
     const defaults = {
         'la_suffix': { 'w1':'ラ', 'w2':'シ', 'w3':'ド', 'w4':'レ', 'w5':'ミ', 'w6':'ファ', 'w7':'ソ', 'b1_s':'ラ#', 'b1_f':'シ♭', 'b2_s':'ド#', 'b2_f':'レ♭', 'b3_s':'レ#', 'b3_f':'ミ♭', 'b4_s':'ファ#', 'b4_f':'ソ♭', 'b5_s':'ソ#', 'b5_f':'ラ♭' },
         'la_hemi': { 'w1':'La', 'w2':'Ti', 'w3':'Do', 'w4':'Re', 'w5':'Mi', 'w6':'Fa', 'w7':'So', 'b1_s':'Li', 'b1_f':'Te', 'b2_s':'Di', 'b2_f':'Ra', 'b3_s':'Ri', 'b3_f':'Me', 'b4_s':'Fi', 'b4_f':'Se', 'b5_s':'Si', 'b5_f':'Le' },
         'do_suffix': { 'w1':'ド', 'w2':'レ', 'w3':'ミ♭', 'w4':'ファ', 'w5':'ソ', 'w6':'ラ♭', 'w7':'シ♭', 'b1_s':'ド#', 'b1_f':'レ♭', 'b2_s':'ミ', 'b2_f':'ファ♭', 'b3_s':'ファ#', 'b3_f':'ソ♭', 'b4_s':'ラ', 'b4_f':'シ♭♭', 'b5_s':'シ', 'b5_f':'ド♭' },
         'do_hemi': { 'w1':'Do', 'w2':'Re', 'w3':'Me', 'w4':'Fa', 'w5':'So', 'w6':'Le', 'w7':'Te', 'b1_s':'Di', 'b1_f':'Ra', 'b2_s':'Mi', 'b2_f':'Mi', 'b3_s':'Fi', 'b3_f':'Se', 'b4_s':'La', 'b4_f':'Le', 'b5_s':'Ti', 'b5_f':'Ti' }
     };
+
+    // UI追加機能 (範囲指定)
+    function addRangeRow() {
+        const container = document.getElementById('rangeContainer');
+        const row = document.createElement('div');
+        row.className = 'range-row';
+        row.innerHTML = `
+            <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜 
+            <input type="number" class="range-input" placeholder="終了" min="1"> 小節目 
+            <button class="range-btn" onclick="this.parentElement.remove()">削除</button>`;
+        container.appendChild(row);
+    }
+
+    function getRanges() {
+        const rows = document.querySelectorAll('.range-row');
+        const ranges = [];
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            const start = parseInt(inputs[0].value);
+            const end = parseInt(inputs[1].value);
+            if (!isNaN(start) || !isNaN(end)) {
+                ranges.push({
+                    start: isNaN(start) ? 1 : start,
+                    end: isNaN(end) ? Infinity : end
+                });
+            }
+        });
+        return ranges;
+    }
+
+    function isMeasureInRange(mIdx, ranges) {
+        if (ranges.length === 0) return true;
+        const mNum = mIdx + 1;
+        return ranges.some(r => mNum >= r.start && mNum <= r.end);
+    }
 
     // UI連動
     document.querySelectorAll('input[name="solfegeSystem"], input[name="namingStyle"]').forEach(el => {
@@ -191,13 +240,13 @@
         });
     }
 
-    // JSON保存・読込
     function downloadConfig() {
         updateCustomDictFromUI();
         const a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([JSON.stringify(customDict, null, 2)], {type: "application/json"}));
         a.download = "musescore_piano_config.json"; a.click();
     }
+    
     function importConfig(input) {
         if(!input.files.length) return;
         const reader = new FileReader();
@@ -210,6 +259,7 @@
         };
         reader.readAsText(input.files[0]);
     }
+    
     function updateCustomDictFromUI() {
         Object.values(tpcToUI).forEach(id => {
             const el = document.getElementById(id);
@@ -264,8 +314,8 @@
         const style = document.querySelector('input[name="namingStyle"]:checked').value;
         const useCustom = document.getElementById('useCustomMap').checked;
         const userConfigs = modulations.map((_, i) => document.querySelector(`input[name="mode_${i}"]:checked`).value === 'minor');
+        const targetRanges = getRanges();
         
-        // 実行時にUIの最新値を取得して辞書化
         const activeDict = {};
         if (useCustom) {
             updateCustomDictFromUI();
@@ -279,6 +329,8 @@
         selectedParts.forEach(idx => {
             const staff = musicStaves[idx];
             let prevA = null, currA = 0, prevS = null, tied = false, pending = false, pivot = false;
+            let slurDepth = 0; // スラーの深さを追跡
+
             const ms = staff.getElementsByTagName('Measure');
             for (let m = 0; m < ms.length; m++) {
                 const modIdx = modulations.reduce((p, c, i) => (m >= c.idx ? i : p), 0);
@@ -293,9 +345,25 @@
                     const tpc = parseInt(notes[0].getElementsByTagName('tpc')[0].textContent);
                     const nextTied = notes[0].getElementsByTagName('Tie').length > 0;
 
+                    // スラーの開始と終了を検知
+                    let startsSlur = false;
+                    let endsSlur = false;
+                    const spanners = Array.from(chords[c].getElementsByTagName('Spanner')).filter(s => s.getAttribute('type') === 'Slur');
+                    spanners.forEach(sp => {
+                        if (sp.getElementsByTagName('Slur').length > 0) startsSlur = true;
+                        if (sp.getElementsByTagName('prev').length > 0) endsSlur = true;
+                    });
+
+                    // 既にスラーの中にいて、かつ新たなスラーの開始音ではない場合、括弧書きの対象にする
+                    const isMelismaContinuation = (slurDepth > 0) && !startsSlur;
+
+                    // 次の和音のためにスラーの深さを更新
+                    if (startsSlur) slurDepth++;
+                    if (endsSlur) slurDepth = Math.max(0, slurDepth - 1);
+
                     const getS = (t, a, mFlag) => {
                         let rootTpc = 14 + a;
-                        if (mFlag) rootTpc += 3; // 短調は基音をA(-3度)へシフトし、UIの0地点と相対位置を合わせる
+                        if (mFlag) rootTpc += 3; 
                         const diff = t - rootTpc;
                         if (!mFlag) {
                             const majMap = style === 'hemi' ? defaults['do_hemi'] : defaults['do_suffix'];
@@ -308,13 +376,25 @@
                     let syl = getS(tpc, currA, isMinor);
                     let txt = syl;
                     let doP = false;
+                    
                     if (pivot && !tied) { 
                         txt = `(${getS(tpc, prevA, userConfigs[Math.max(0, modIdx-1)])}→)${syl}`;
                         doP = true; pivot = false; pending = false;
                     } else if (c === 0) { if (tied) pending = true; else doP = true; } 
                     else if (!tied && (pending || syl !== prevS)) { doP = true; pending = false; }
 
-                    if (doP) addLyrics(mscxDoc, chords[c], txt);
+                    // 出力判定を満たした場合のみ書き込み
+                    if (doP) {
+                        // スラー中の継続音であれば括弧で囲む
+                        if (isMelismaContinuation) {
+                            txt = `(${txt})`;
+                        }
+                        // 適用範囲内にあるかチェックして書き込む
+                        if (isMeasureInRange(m, targetRanges)) {
+                            addLyrics(mscxDoc, chords[c], txt);
+                        }
+                    }
+
                     prevS = syl; tied = nextTied;
                 }
             }

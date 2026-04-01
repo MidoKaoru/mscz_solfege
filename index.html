@@ -12,10 +12,7 @@
         .description { font-size: 0.9em; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .drop-zone { border: 3px dashed #3498db; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: #ebf5fb; transition: 0.3s; margin-bottom: 15px; }
         .drop-zone.dragover { background: #d4e6f1; border-color: #2980b9; }
-        
-        /* ステータス表示のCSSを調整（下に余白を持たせる） */
         #status { text-align: center; font-weight: bold; margin-bottom: 20px; min-height: 1.5em; }
-        
         .config-section { display: none; }
         .panel { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee; }
         .panel-title { font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; display: flex; justify-content: space-between; align-items: center; }
@@ -103,7 +100,6 @@
     dropZone.ondrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); };
     fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
-    // 調性の一括設定関数
     function setAllModes(mode) {
         modulations.forEach((_, i) => {
             const radio = document.querySelector(`input[name="mode_${i}"][value="${mode}"]`);
@@ -124,7 +120,8 @@
             mscxDoc = new DOMParser().parseFromString(await currentZip.file(mscxPath).async("string"), "text/xml");
 
             partList.innerHTML = '';
-            const musicStaves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
+            const allStaves = Array.from(mscxDoc.getElementsByTagName('Staff'));
+            const musicStaves = allStaves.filter(s => s.getElementsByTagName('Measure').length > 0);
             const parts = mscxDoc.getElementsByTagName('Part');
             for (let i = 0; i < parts.length; i++) {
                 let name = parts[i].getElementsByTagName('longName')[0]?.textContent || parts[i].getElementsByTagName('trackName')[0]?.textContent || `Part ${i+1}`;
@@ -163,10 +160,11 @@
         const naming = document.querySelector('input[name="namingStyle"]:checked').value;
         const userConfigs = modulations.map((_, i) => document.querySelector(`input[name="mode_${i}"]:checked`).value === 'minor');
 
-        const musicStaves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
+        const allStavesExec = Array.from(mscxDoc.getElementsByTagName('Staff'));
+        const musicStavesExec = allStavesExec.filter(s => s.getElementsByTagName('Measure').length > 0);
 
         selectedParts.forEach(idx => {
-            const staff = musicStaves[idx];
+            const staff = musicStavesExec[idx];
             let prevAcc = null, currAcc = 0, prevSyl = null, tied = false, pending = false, pivot = false;
 
             const ms = staff.getElementsByTagName('Measure');
@@ -222,10 +220,25 @@
         showStatus('green', '完了しました！');
     };
 
-    function addLyrics(xml, node, txt) {
-        const lyr = xml.createElement('Lyrics'), no = xml.createElement('no'), t = xml.createElement('text');
-        no.textContent = "1"; t.textContent = txt;
-        lyr.appendChild(no); lyr.appendChild(t); node.appendChild(lyr);
+    function addLyrics(xmlDoc, chordNode, text) {
+        const existingLyrics = Array.from(chordNode.getElementsByTagName('Lyrics'));
+        const targetLyric = existingLyrics.find(l => l.getElementsByTagName('no')[0]?.textContent === "1");
+
+        if (targetLyric) {
+            const textNode = targetLyric.getElementsByTagName('text')[0];
+            if (textNode) {
+                textNode.textContent = textNode.textContent + " " + text;
+            }
+        } else {
+            const lyrics = xmlDoc.createElement('Lyrics');
+            const no = xmlDoc.createElement('no');
+            no.textContent = "1";
+            const tNode = xmlDoc.createElement('text');
+            tNode.textContent = text;
+            lyrics.appendChild(no);
+            lyrics.appendChild(tNode);
+            chordNode.appendChild(lyrics);
+        }
     }
     function showStatus(c, m) { const s = document.getElementById('status'); s.style.color = c; s.innerText = m; }
 </script>

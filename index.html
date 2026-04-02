@@ -13,7 +13,10 @@
         .drop-zone { border: 3px dashed #3498db; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: #ebf5fb; transition: 0.3s; margin-bottom: 15px; }
         .drop-zone.dragover { background: #d4e6f1; border-color: #2980b9; }
         #status { text-align: center; font-weight: bold; margin-bottom: 20px; min-height: 1.5em; }
-        .config-section { display: none; }
+        
+        /* 設定エリアのアニメーション設定（フワッと表示・非表示） */
+        .config-section { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        
         .panel { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee; }
         .panel-title { font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; display: flex; justify-content: space-between; align-items: center; }
         .bulk-actions { font-size: 0.8em; font-weight: normal; }
@@ -31,7 +34,14 @@
         .add-range-btn { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-top: 5px; }
         .add-range-btn:hover { background: #2980b9; }
 
-        /* ピアノ鍵盤UI (F〜B構成) */
+        /* タブUI */
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #3498db; }
+        .tab-btn { padding: 10px 20px; cursor: pointer; background: #ecf0f1; border: none; border-radius: 8px 8px 0 0; font-weight: bold; color: #7f8c8d; transition: 0.2s; }
+        .tab-btn.active { background: #3498db; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ピアノ鍵盤UI */
         .custom-map-area { display: none; margin-top: 15px; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
         .piano-wrapper { position: relative; width: 100%; max-width: 800px; height: 180px; display: flex; margin: 20px auto; border: 2px solid #333; border-radius: 4px; border-top: 10px solid #333; }
         .white-key { flex: 1; border-right: 1px solid #ccc; background: #fff; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 10px; z-index: 1; }
@@ -44,17 +54,28 @@
         .black-key.disabled { background: #7f8c8d; box-shadow: none; }
         .black-key input { width: 38px; text-align: center; border: none; border-radius: 2px; background: #eee; color: #333; font-size: 0.8em; font-weight: bold; padding: 2px; }
         
-        .bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } 
-        .bk-d2 { left: calc(100% / 11 * 2 - (100% / 11 * 0.35)); } 
-        .bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } 
-        .bk-2  { left: calc(100% / 11 * 5 - (100% / 11 * 0.35)); } 
-        .bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } 
-        .bk-4  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } 
-        .bk-5  { left: calc(100% / 11 * 9 - (100% / 11 * 0.35)); } 
-        .bk-d3 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); }
+        /* 長調用 黒鍵配置 (A B | C D E F G A B | C D) */
+        .maj-bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } 
+        .maj-bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } 
+        .maj-bk-2  { left: calc(100% / 11 * 4 - (100% / 11 * 0.35)); } 
+        .maj-bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } 
+        .maj-bk-4  { left: calc(100% / 11 * 7 - (100% / 11 * 0.35)); } 
+        .maj-bk-5  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } 
+        .maj-bk-d2 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); }
+
+        /* 短調用 黒鍵配置 (F G | A B C D E F G | A B) */
+        .min-bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } 
+        .min-bk-d2 { left: calc(100% / 11 * 2 - (100% / 11 * 0.35)); } 
+        .min-bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } 
+        .min-bk-2  { left: calc(100% / 11 * 5 - (100% / 11 * 0.35)); } 
+        .min-bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } 
+        .min-bk-4  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } 
+        .min-bk-5  { left: calc(100% / 11 * 9 - (100% / 11 * 0.35)); } 
+        .min-bk-d3 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); }
 
         button#execBtn { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 20px; }
         button#execBtn:hover { background: #219150; }
+        button#execBtn:disabled { background: #95a5a6; cursor: not-allowed; }
         .json-actions { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; display: flex; justify-content: center; gap: 15px; }
         label { cursor: pointer; }
     </style>
@@ -63,7 +84,7 @@
 
 <div class="container">
     <h2>🎵 MuseScore 移動ド自動入力ツール</h2>
-    <div class="description">短調の場合「ドレミ式/ラシド式」および「変名表記」を選択できます。部分適用にも対応。</div>
+    <div class="description">長調・短調、変名表記、カスタムマッピング、部分適用に対応。</div>
 
     <div class="drop-zone" id="dropZone">
         ここに .mscz ファイルをドロップ または クリックして選択
@@ -102,15 +123,19 @@
         </div>
 
         <div class="panel global-settings">
-            <div class="panel-title">4. 短調の読み方・表記ルール (一括設定)</div>
+            <div class="panel-title">4. 読み方・表記ルール (一括設定)</div>
             <div style="font-size: 0.9em;">
+                <strong>▼ 連続する同じ階名の表記</strong><br>
+                <label><input type="radio" name="repeatStyle" value="always" checked> 毎回振る</label>
+                <label style="margin-left:20px;"><input type="radio" name="repeatStyle" value="blank"> 空欄にする</label>
+                <br><br>
+                <strong>▼ 派生音の表記形式 (長調・短調共通)</strong><br>
+                <label><input type="radio" name="namingStyle" value="suffix" checked> 記号式 (ファ#, シb...)</label>
+                <label style="margin-left:20px;"><input type="radio" name="namingStyle" value="hemi"> 変名式 (Do, Di, Re...)</label>
+                <br><br>
                 <strong>▼ 短調の主音を何と呼ぶか</strong><br>
                 <label><input type="radio" name="solfegeSystem" value="la" checked> ラシド式 (主音=ラ)</label>
                 <label style="margin-left:20px;"><input type="radio" name="solfegeSystem" value="do"> ドレミ式 (主音=ド)</label>
-                <br><br>
-                <strong>▼ 派生音の表記形式</strong><br>
-                <label><input type="radio" name="namingStyle" value="suffix" checked> 記号式 (ファ#, シb...)</label>
-                <label style="margin-left:20px;"><input type="radio" name="namingStyle" value="hemi"> 変名式 (Do, Di, Re...)</label>
                 <br><br>
                 <div style="border-top: 1px dashed #d4ac0d; padding-top: 10px; margin-top: 5px;">
                     <label style="font-weight: bold; color: #b9770e;">
@@ -120,34 +145,64 @@
             </div>
 
             <div id="customMapArea" class="custom-map-area">
-                <strong>🎹 カスタムマッピング定義 (ピアノ鍵盤)</strong>
-                <p style="font-size: 0.8em; color: #666; margin: 5px 0 10px;">
-                    短調のスケール（白鍵のA〜G）を基準に、黒鍵を含む17枠を直感的に設定できます。
-                </p>
-                
-                <div class="piano-wrapper">
-                    <div class="white-key disabled"><span class="wk-label disabled">F</span></div>
-                    <div class="white-key disabled"><span class="wk-label disabled">G</span></div>
-                    
-                    <div class="white-key"><span class="wk-label">主音<br>(A)</span><input type="text" id="w1"></div>
-                    <div class="white-key"><span class="wk-label">2度<br>(B)</span><input type="text" id="w2"></div>
-                    <div class="white-key"><span class="wk-label">3度<br>(C)</span><input type="text" id="w3"></div>
-                    <div class="white-key"><span class="wk-label">4度<br>(D)</span><input type="text" id="w4"></div>
-                    <div class="white-key"><span class="wk-label">5度<br>(E)</span><input type="text" id="w5"></div>
-                    <div class="white-key"><span class="wk-label">6度<br>(F)</span><input type="text" id="w6"></div>
-                    <div class="white-key"><span class="wk-label">7度<br>(G)</span><input type="text" id="w7"></div>
-                    
-                    <div class="white-key disabled"><span class="wk-label disabled">A</span></div>
-                    <div class="white-key disabled"><span class="wk-label disabled">B</span></div>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('major')">長調 (Major) 基準: ド</button>
+                    <button class="tab-btn" onclick="switchTab('minor')">短調 (Minor) 基準: ラ/ド</button>
+                </div>
 
-                    <div class="black-key disabled bk-d1"></div> 
-                    <div class="black-key disabled bk-d2"></div> 
-                    <div class="black-key bk-1"><input type="text" id="b1_s" title="シャープ系(#1)"><input type="text" id="b1_f" title="フラット系(b2)"></div>
-                    <div class="black-key bk-2"><input type="text" id="b2_s" title="シャープ系(M3)"><input type="text" id="b2_f" title="フラット系(dim4)"></div>
-                    <div class="black-key bk-3"><input type="text" id="b3_s" title="シャープ系(#4)"><input type="text" id="b3_f" title="フラット系(b5)"></div>
-                    <div class="black-key bk-4"><input type="text" id="b4_s" title="シャープ系(M6)"><input type="text" id="b4_f" title="フラット系(dim7)"></div>
-                    <div class="black-key bk-5"><input type="text" id="b5_s" title="シャープ系(M7)"><input type="text" id="b5_f" title="フラット系(dim8)"></div>
-                    <div class="black-key disabled bk-d3"></div>
+                <div id="tab-major" class="tab-content active">
+                    <p style="font-size: 0.8em; color: #666; margin: 5px 0 10px;">
+                        長調のスケール（白鍵のC〜B）を基準に設定します。
+                    </p>
+                    <div class="piano-wrapper">
+                        <div class="white-key disabled"><span class="wk-label disabled">A</span></div>
+                        <div class="white-key disabled"><span class="wk-label disabled">B</span></div>
+                        <div class="white-key"><span class="wk-label">主音<br>(C)</span><input type="text" id="maj_w1"></div>
+                        <div class="white-key"><span class="wk-label">2度<br>(D)</span><input type="text" id="maj_w2"></div>
+                        <div class="white-key"><span class="wk-label">3度<br>(E)</span><input type="text" id="maj_w3"></div>
+                        <div class="white-key"><span class="wk-label">4度<br>(F)</span><input type="text" id="maj_w4"></div>
+                        <div class="white-key"><span class="wk-label">5度<br>(G)</span><input type="text" id="maj_w5"></div>
+                        <div class="white-key"><span class="wk-label">6度<br>(A)</span><input type="text" id="maj_w6"></div>
+                        <div class="white-key"><span class="wk-label">7度<br>(B)</span><input type="text" id="maj_w7"></div>
+                        <div class="white-key disabled"><span class="wk-label disabled">C</span></div>
+                        <div class="white-key disabled"><span class="wk-label disabled">D</span></div>
+
+                        <div class="black-key disabled maj-bk-d1"></div> 
+                        <div class="black-key maj-bk-1"><input type="text" id="maj_b1_s" title="シャープ系(#1)"><input type="text" id="maj_b1_f" title="フラット系(b2)"></div>
+                        <div class="black-key maj-bk-2"><input type="text" id="maj_b2_s" title="シャープ系(#2)"><input type="text" id="maj_b2_f" title="フラット系(b3)"></div>
+                        <div class="black-key maj-bk-3"><input type="text" id="maj_b3_s" title="シャープ系(#4)"><input type="text" id="maj_b3_f" title="フラット系(b5)"></div>
+                        <div class="black-key maj-bk-4"><input type="text" id="maj_b4_s" title="シャープ系(#5)"><input type="text" id="maj_b4_f" title="フラット系(b6)"></div>
+                        <div class="black-key maj-bk-5"><input type="text" id="maj_b5_s" title="シャープ系(#6)"><input type="text" id="maj_b5_f" title="フラット系(b7)"></div>
+                        <div class="black-key disabled maj-bk-d2"></div>
+                    </div>
+                </div>
+
+                <div id="tab-minor" class="tab-content">
+                    <p style="font-size: 0.8em; color: #666; margin: 5px 0 10px;">
+                        短調のスケール（白鍵のA〜G）を基準に設定します。
+                    </p>
+                    <div class="piano-wrapper">
+                        <div class="white-key disabled"><span class="wk-label disabled">F</span></div>
+                        <div class="white-key disabled"><span class="wk-label disabled">G</span></div>
+                        <div class="white-key"><span class="wk-label">主音<br>(A)</span><input type="text" id="min_w1"></div>
+                        <div class="white-key"><span class="wk-label">2度<br>(B)</span><input type="text" id="min_w2"></div>
+                        <div class="white-key"><span class="wk-label">3度<br>(C)</span><input type="text" id="min_w3"></div>
+                        <div class="white-key"><span class="wk-label">4度<br>(D)</span><input type="text" id="min_w4"></div>
+                        <div class="white-key"><span class="wk-label">5度<br>(E)</span><input type="text" id="min_w5"></div>
+                        <div class="white-key"><span class="wk-label">6度<br>(F)</span><input type="text" id="min_w6"></div>
+                        <div class="white-key"><span class="wk-label">7度<br>(G)</span><input type="text" id="min_w7"></div>
+                        <div class="white-key disabled"><span class="wk-label disabled">A</span></div>
+                        <div class="white-key disabled"><span class="wk-label disabled">B</span></div>
+
+                        <div class="black-key disabled min-bk-d1"></div> 
+                        <div class="black-key disabled min-bk-d2"></div> 
+                        <div class="black-key min-bk-1"><input type="text" id="min_b1_s" title="シャープ系(#1)"><input type="text" id="min_b1_f" title="フラット系(b2)"></div>
+                        <div class="black-key min-bk-2"><input type="text" id="min_b2_s" title="シャープ系(M3)"><input type="text" id="min_b2_f" title="フラット系(dim4)"></div>
+                        <div class="black-key min-bk-3"><input type="text" id="min_b3_s" title="シャープ系(#4)"><input type="text" id="min_b3_f" title="フラット系(b5)"></div>
+                        <div class="black-key min-bk-4"><input type="text" id="min_b4_s" title="シャープ系(M6)"><input type="text" id="min_b4_f" title="フラット系(dim7)"></div>
+                        <div class="black-key min-bk-5"><input type="text" id="min_b5_s" title="シャープ系(M7)"><input type="text" id="min_b5_f" title="フラット系(dim8)"></div>
+                        <div class="black-key disabled min-bk-d3"></div>
+                    </div>
                 </div>
 
                 <div class="json-actions">
@@ -164,26 +219,46 @@
 
 <script>
     let currentZip = null, mscxPath = null, mscxDoc = null, originalFileName = "", modulations = [];
-    let customDict = {};
+    let customDict = { major: {}, minor: {} };
 
-    const tpcToUI = {
-        0: 'w1', 2: 'w2', '-3': 'w3', '-1': 'w4', 1: 'w5', '-4': 'w6', '-2': 'w7',
-        7: 'b1_s', '-5': 'b1_f',
-        4: 'b2_s', '-8': 'b2_f', 
-        6: 'b3_s', '-6': 'b3_f',
-        3: 'b4_s', '-10': 'b4_f', 
-        5: 'b5_s', '-9': 'b5_f', 
-        9: 'w3', 11: 'w6', '-7': 'w2', '-11': 'w5' 
+    // TPC距離からUIのIDへのマッピング
+    const distToUIMajor = {
+        0: 'maj_w1', 2: 'maj_w2', 4: 'maj_w3', '-1': 'maj_w4', 1: 'maj_w5', 3: 'maj_w6', 5: 'maj_w7',
+        7: 'maj_b1_s', '-5': 'maj_b1_f',
+        9: 'maj_b2_s', '-3': 'maj_b2_f',
+        6: 'maj_b3_s', '-6': 'maj_b3_f',
+        8: 'maj_b4_s', '-4': 'maj_b4_f',
+        10: 'maj_b5_s', '-2': 'maj_b5_f',
+        11: 'maj_w4', '-7': 'maj_w7', 12: 'maj_w1', '-8': 'maj_w3'
     };
 
-    const defaults = {
-        'la_suffix': { 'w1':'ラ', 'w2':'シ', 'w3':'ド', 'w4':'レ', 'w5':'ミ', 'w6':'ファ', 'w7':'ソ', 'b1_s':'ラ#', 'b1_f':'シ♭', 'b2_s':'ド#', 'b2_f':'レ♭', 'b3_s':'レ#', 'b3_f':'ミ♭', 'b4_s':'ファ#', 'b4_f':'ソ♭', 'b5_s':'ソ#', 'b5_f':'ラ♭' },
-        'la_hemi': { 'w1':'La', 'w2':'Ti', 'w3':'Do', 'w4':'Re', 'w5':'Mi', 'w6':'Fa', 'w7':'So', 'b1_s':'Li', 'b1_f':'Te', 'b2_s':'Di', 'b2_f':'Ra', 'b3_s':'Ri', 'b3_f':'Me', 'b4_s':'Fi', 'b4_f':'Se', 'b5_s':'Si', 'b5_f':'Le' },
-        'do_suffix': { 'w1':'ド', 'w2':'レ', 'w3':'ミ♭', 'w4':'ファ', 'w5':'ソ', 'w6':'ラ♭', 'w7':'シ♭', 'b1_s':'ド#', 'b1_f':'レ♭', 'b2_s':'ミ', 'b2_f':'ファ♭', 'b3_s':'ファ#', 'b3_f':'ソ♭', 'b4_s':'ラ', 'b4_f':'シ♭♭', 'b5_s':'シ', 'b5_f':'ド♭' },
-        'do_hemi': { 'w1':'Do', 'w2':'Re', 'w3':'Me', 'w4':'Fa', 'w5':'So', 'w6':'Le', 'w7':'Te', 'b1_s':'Di', 'b1_f':'Ra', 'b2_s':'Mi', 'b2_f':'Mi', 'b3_s':'Fi', 'b3_f':'Se', 'b4_s':'La', 'b4_f':'Le', 'b5_s':'Ti', 'b5_f':'Ti' }
+    const distToUIMinor = {
+        0: 'min_w1', 2: 'min_w2', '-3': 'min_w3', '-1': 'min_w4', 1: 'min_w5', '-4': 'min_w6', '-2': 'min_w7',
+        7: 'min_b1_s', '-5': 'min_b1_f',
+        4: 'min_b2_s', '-8': 'min_b2_f', 
+        6: 'min_b3_s', '-6': 'min_b3_f',
+        3: 'min_b4_s', '-9': 'min_b4_f', 
+        5: 'min_b5_s', '-7': 'min_b5_f', 
+        8: 'min_w6', 9: 'min_w3', 10: 'min_w7', '-10': 'min_w2', '-11': 'min_w5'
     };
 
-    // UI追加機能 (範囲指定)
+    // デフォルト辞書群
+    const defMajorSuffix = { 'maj_w1':'ド', 'maj_w2':'レ', 'maj_w3':'ミ', 'maj_w4':'ファ', 'maj_w5':'ソ', 'maj_w6':'ラ', 'maj_w7':'シ', 'maj_b1_s':'ド#', 'maj_b1_f':'レ♭', 'maj_b2_s':'レ#', 'maj_b2_f':'ミ♭', 'maj_b3_s':'ファ#', 'maj_b3_f':'ソ♭', 'maj_b4_s':'ソ#', 'maj_b4_f':'ラ♭', 'maj_b5_s':'ラ#', 'maj_b5_f':'シ♭' };
+    const defMajorHemi = { 'maj_w1':'Do', 'maj_w2':'Re', 'maj_w3':'Mi', 'maj_w4':'Fa', 'maj_w5':'So', 'maj_w6':'La', 'maj_w7':'Ti', 'maj_b1_s':'Di', 'maj_b1_f':'Ra', 'maj_b2_s':'Ri', 'maj_b2_f':'Me', 'maj_b3_s':'Fi', 'maj_b3_f':'Se', 'maj_b4_s':'Si', 'maj_b4_f':'Le', 'maj_b5_s':'Li', 'maj_b5_f':'Te' };
+    const defMinorLaSuffix = { 'min_w1':'ラ', 'min_w2':'シ', 'min_w3':'ド', 'min_w4':'レ', 'min_w5':'ミ', 'min_w6':'ファ', 'min_w7':'ソ', 'min_b1_s':'ラ#', 'min_b1_f':'シ♭', 'min_b2_s':'ド#', 'min_b2_f':'レ♭', 'min_b3_s':'レ#', 'min_b3_f':'ミ♭', 'min_b4_s':'ファ#', 'min_b4_f':'ソ♭', 'min_b5_s':'ソ#', 'min_b5_f':'ラ♭' };
+    const defMinorLaHemi = { 'min_w1':'La', 'min_w2':'Ti', 'min_w3':'Do', 'min_w4':'Re', 'min_w5':'Mi', 'min_w6':'Fa', 'min_w7':'So', 'min_b1_s':'Li', 'min_b1_f':'Te', 'min_b2_s':'Di', 'min_b2_f':'Ra', 'min_b3_s':'Ri', 'min_b3_f':'Me', 'min_b4_s':'Fi', 'min_b4_f':'Se', 'min_b5_s':'Si', 'min_b5_f':'Le' };
+    const defMinorDoSuffix = { 'min_w1':'ド', 'min_w2':'レ', 'min_w3':'ミ♭', 'min_w4':'ファ', 'min_w5':'ソ', 'min_w6':'ラ♭', 'min_w7':'シ♭', 'min_b1_s':'ド#', 'min_b1_f':'レ♭', 'min_b2_s':'ミ', 'min_b2_f':'ファ♭', 'min_b3_s':'ファ#', 'min_b3_f':'ソ♭', 'min_b4_s':'ラ', 'min_b4_f':'シ♭♭', 'min_b5_s':'シ', 'min_b5_f':'ド♭' };
+    const defMinorDoHemi = { 'min_w1':'Do', 'min_w2':'Re', 'min_w3':'Me', 'min_w4':'Fa', 'min_w5':'So', 'min_w6':'Le', 'min_w7':'Te', 'min_b1_s':'Di', 'min_b1_f':'Ra', 'min_b2_s':'Mi', 'min_b2_f':'Mi', 'min_b3_s':'Fi', 'min_b3_f':'Se', 'min_b4_s':'La', 'min_b4_f':'Le', 'min_b5_s':'Ti', 'min_b5_f':'Ti' };
+
+    // タブ切り替え処理
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // 範囲指定UI
     function addRangeRow() {
         const container = document.getElementById('rangeContainer');
         const row = document.createElement('div');
@@ -203,10 +278,7 @@
             const start = parseInt(inputs[0].value);
             const end = parseInt(inputs[1].value);
             if (!isNaN(start) || !isNaN(end)) {
-                ranges.push({
-                    start: isNaN(start) ? 1 : start,
-                    end: isNaN(end) ? Infinity : end
-                });
+                ranges.push({ start: isNaN(start) ? 1 : start, end: isNaN(end) ? Infinity : end });
             }
         });
         return ranges;
@@ -230,14 +302,14 @@
     }
 
     function updateKeyboardDefaults() {
-        const sys = document.querySelector('input[name="solfegeSystem"]:checked').value;
         const style = document.querySelector('input[name="namingStyle"]:checked').value;
-        const key = `${sys}_${style}`;
-        const dict = defaults[key];
-        Object.keys(dict).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = dict[id];
-        });
+        const minorSys = document.querySelector('input[name="solfegeSystem"]:checked').value;
+        
+        const majDict = style === 'hemi' ? defMajorHemi : defMajorSuffix;
+        const minDict = style === 'hemi' ? (minorSys === 'la' ? defMinorLaHemi : defMinorDoHemi) : (minorSys === 'la' ? defMinorLaSuffix : defMinorDoSuffix);
+        
+        Object.keys(majDict).forEach(id => { const el = document.getElementById(id); if (el) el.value = majDict[id]; });
+        Object.keys(minDict).forEach(id => { const el = document.getElementById(id); if (el) el.value = minDict[id]; });
     }
 
     function downloadConfig() {
@@ -252,19 +324,57 @@
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                customDict = JSON.parse(e.target.result);
-                Object.keys(customDict).forEach(id => { const el = document.getElementById(id); if(el) el.value = customDict[id]; });
+                const loaded = JSON.parse(e.target.result);
+                if (!loaded.major || !loaded.minor) {
+                    alert("古い形式、または不正な形式のファイルです。新しく設定を作り直してください。");
+                    return;
+                }
+                customDict = loaded;
+                Object.keys(customDict.major).forEach(id => { const el = document.getElementById(id); if(el) el.value = customDict.major[id]; });
+                Object.keys(customDict.minor).forEach(id => { const el = document.getElementById(id); if(el) el.value = customDict.minor[id]; });
                 showStatus('green', 'カスタム設定を読み込みました');
             } catch(err) { showStatus('red', '読込失敗'); }
+            input.value = ""; // リセット
         };
         reader.readAsText(input.files[0]);
     }
     
     function updateCustomDictFromUI() {
-        Object.values(tpcToUI).forEach(id => {
-            const el = document.getElementById(id);
-            if(el) customDict[id] = el.value;
-        });
+        customDict = { major: {}, minor: {} };
+        Object.values(distToUIMajor).forEach(id => { const el = document.getElementById(id); if(el) customDict.major[id] = el.value; });
+        Object.values(distToUIMinor).forEach(id => { const el = document.getElementById(id); if(el) customDict.minor[id] = el.value; });
+    }
+
+    // --- アプリの初期化 (楽譜データのみリセット) ---
+    function resetApp() {
+        currentZip = null;
+        mscxPath = null;
+        mscxDoc = null;
+        originalFileName = "";
+        modulations = [];
+        
+        const configArea = document.getElementById('configArea');
+        // CSSのアニメーション用にopacityとdisplayをリセット
+        configArea.style.opacity = '0';
+        configArea.style.display = 'none';
+        
+        document.getElementById('partList').innerHTML = '';
+        document.getElementById('keyConfigList').innerHTML = '';
+        
+        // 範囲指定を初期状態（1行の空欄）に戻す
+        document.getElementById('rangeContainer').innerHTML = `
+            <div class="range-row">
+                <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜 
+                <input type="number" class="range-input" placeholder="終了" min="1"> 小節目
+            </div>`;
+            
+        // ボタンを活性化してテキストを戻す
+        const btn = document.getElementById('execBtn');
+        btn.disabled = false;
+        btn.innerText = '移動ドを書き込んでダウンロード';
+        
+        // ファイル入力をリセット
+        document.getElementById('fileInput').value = '';
     }
 
     // --- ファイル解析・実行 ---
@@ -281,6 +391,10 @@
 
     async function handleFile(file) {
         if (!file || !file.name.endsWith('.mscz')) return;
+        
+        // 新しいファイルが来たら瞬時に前回の残骸を消す（コンフリクト完全防止）
+        resetApp(); 
+        
         originalFileName = file.name.replace('.mscz', '');
         showStatus('blue', '解析中...');
         try {
@@ -303,33 +417,45 @@
                 if (acc !== null && acc !== lastA) { lastA = acc; modulations.push({ idx: m, label: m === 0 ? "最初" : `${m+1}小節` }); }
             }
             keyConfigList.innerHTML = modulations.map((m, i) => `<div class="modulation-item"><b>📍 ${m.label}</b><br><label><input type="radio" name="mode_${i}" value="major" checked> 長調</label><label style="margin-left:10px;"><input type="radio" name="mode_${i}" value="minor"> 短調</label></div>`).join('');
-            document.getElementById('configArea').style.display = 'block';
+            
+            // アニメーション付きで設定エリアを表示
+            const configArea = document.getElementById('configArea');
+            configArea.style.display = 'block';
+            setTimeout(() => { configArea.style.opacity = '1'; }, 10);
+            
             showStatus('green', 'ファイルを読み込みました。');
         } catch (e) { showStatus('red', 'エラー: ' + e.message); }
     }
 
-    document.getElementById('execBtn').onclick = async () => {
+    document.getElementById('execBtn').onclick = async function() {
+        // ボタンを無効化して二重クリックを防止
+        this.disabled = true;
+        this.innerText = '処理中...';
+        
         const selectedParts = Array.from(document.querySelectorAll('input[name="targetPart"]:checked')).map(cb => parseInt(cb.value));
-        const sys = document.querySelector('input[name="solfegeSystem"]:checked').value;
         const style = document.querySelector('input[name="namingStyle"]:checked').value;
+        const minorSys = document.querySelector('input[name="solfegeSystem"]:checked').value;
+        const repeatStyle = document.querySelector('input[name="repeatStyle"]:checked').value; // 追加: 連続時の設定
         const useCustom = document.getElementById('useCustomMap').checked;
         const userConfigs = modulations.map((_, i) => document.querySelector(`input[name="mode_${i}"]:checked`).value === 'minor');
         const targetRanges = getRanges();
         
-        const activeDict = {};
+        const activeDict = { major: {}, minor: {} };
         if (useCustom) {
             updateCustomDictFromUI();
-            Object.assign(activeDict, customDict);
+            activeDict.major = Object.assign({}, customDict.major);
+            activeDict.minor = Object.assign({}, customDict.minor);
         } else {
-            Object.assign(activeDict, defaults[`${sys}_${style}`]);
+            activeDict.major = style === 'hemi' ? defMajorHemi : defMajorSuffix;
+            activeDict.minor = style === 'hemi' ? (minorSys === 'la' ? defMinorLaHemi : defMinorDoHemi) : (minorSys === 'la' ? defMinorLaSuffix : defMinorDoSuffix);
         }
 
         const musicStaves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
 
         selectedParts.forEach(idx => {
             const staff = musicStaves[idx];
-            let prevA = null, currA = 0, prevS = null, tied = false, pending = false, pivot = false;
-            let slurDepth = 0; // スラーの深さを追跡
+            let prevA = null, currA = 0, prevS = null, tied = false, pivot = false;
+            let slurDepth = 0;
 
             const ms = staff.getElementsByTagName('Measure');
             for (let m = 0; m < ms.length; m++) {
@@ -345,57 +471,69 @@
                     const tpc = parseInt(notes[0].getElementsByTagName('tpc')[0].textContent);
                     const nextTied = notes[0].getElementsByTagName('Tie').length > 0;
 
-                    // スラーの開始と終了を検知
-                    let startsSlur = false;
-                    let endsSlur = false;
+                    let startsSlur = false, endsSlur = false;
                     const spanners = Array.from(chords[c].getElementsByTagName('Spanner')).filter(s => s.getAttribute('type') === 'Slur');
                     spanners.forEach(sp => {
                         if (sp.getElementsByTagName('Slur').length > 0) startsSlur = true;
                         if (sp.getElementsByTagName('prev').length > 0) endsSlur = true;
                     });
 
-                    // 既にスラーの中にいて、かつ新たなスラーの開始音ではない場合、括弧書きの対象にする
                     const isMelismaContinuation = (slurDepth > 0) && !startsSlur;
-
-                    // 次の和音のためにスラーの深さを更新
                     if (startsSlur) slurDepth++;
                     if (endsSlur) slurDepth = Math.max(0, slurDepth - 1);
 
                     const getS = (t, a, mFlag) => {
                         let rootTpc = 14 + a;
-                        if (mFlag) rootTpc += 3; 
-                        const diff = t - rootTpc;
                         if (!mFlag) {
-                            const majMap = style === 'hemi' ? defaults['do_hemi'] : defaults['do_suffix'];
-                            return majMap[tpcToUI[diff]] || "?";
+                            const diff = t - rootTpc;
+                            const uiId = distToUIMajor[diff];
+                            return uiId ? (activeDict.major[uiId] || "?") : "?";
+                        } else {
+                            rootTpc += 3; 
+                            const diff = t - rootTpc;
+                            const uiId = distToUIMinor[diff];
+                            return uiId ? (activeDict.minor[uiId] || "?") : "?";
                         }
-                        const uiId = tpcToUI[diff];
-                        return uiId ? (activeDict[uiId] || "?") : "?";
                     };
 
                     let syl = getS(tpc, currA, isMinor);
                     let txt = syl;
                     let doP = false;
                     
-                    if (pivot && !tied) { 
-                        txt = `(${getS(tpc, prevA, userConfigs[Math.max(0, modIdx-1)])}→)${syl}`;
-                        doP = true; pivot = false; pending = false;
-                    } else if (c === 0) { if (tied) pending = true; else doP = true; } 
-                    else if (!tied && (pending || syl !== prevS)) { doP = true; pending = false; }
+                    const isContinuous = tied || isMelismaContinuation;
 
-                    // 出力判定を満たした場合のみ書き込み
-                    if (doP) {
-                        // スラー中の継続音であれば括弧で囲む
-                        if (isMelismaContinuation) {
-                            txt = `(${txt})`;
+                    // 出力パターンの分岐ロジック
+                    if (pivot && !isContinuous) {
+                        // 調号変更の境界（新しい発音）
+                        txt = `(${getS(tpc, prevA, userConfigs[Math.max(0, modIdx-1)])}→)${syl}`;
+                        doP = true;
+                        pivot = false;
+                    } else if (isContinuous) {
+                        // タイまたはスラー継続中
+                        if (syl === prevS) {
+                            txt = "＿"; // 同じ音なら全角アンダーバー
+                        } else {
+                            txt = `(${syl})`; // 音程が変わった（メリスマ）
                         }
-                        // 適用範囲内にあるかチェックして書き込む
-                        if (isMeasureInRange(m, targetRanges)) {
-                            addLyrics(mscxDoc, chords[c], txt);
+                        doP = true;
+                    } else {
+                        // 通常（新しい発音）
+                        if (prevS === null) {
+                            doP = true; // 最初の音は必ず出力
+                        } else if (syl === prevS) {
+                            // 同音連続時の設定判定
+                            doP = (repeatStyle === 'always');
+                        } else {
+                            doP = true; // 違う音に動いた
                         }
                     }
 
-                    prevS = syl; tied = nextTied;
+                    if (doP) {
+                        if (isMeasureInRange(m, targetRanges)) addLyrics(mscxDoc, chords[c], txt);
+                    }
+                    
+                    prevS = syl; 
+                    tied = nextTied;
                 }
             }
         });
@@ -403,7 +541,15 @@
         const blob = await currentZip.file(mscxPath, new XMLSerializer().serializeToString(mscxDoc)).generateAsync({type:"blob"});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = `${originalFileName}_solfege.mscz`; a.click();
-        showStatus('green', '完了しました！');
+        
+        // --- 設定エリアをフワッと消して、完了後にリセット ---
+        const configArea = document.getElementById('configArea');
+        configArea.style.opacity = '0'; // フェードアウト開始
+        
+        setTimeout(() => {
+            resetApp(); // アニメーション終了後に完全にDOMとデータをリセット
+            showStatus('green', '完了しました！次のファイルをドロップしてください。');
+        }, 400); // 0.4秒待機（CSSのtransition時間と合わせる）
     };
 
     function addLyrics(xml, node, txt) {

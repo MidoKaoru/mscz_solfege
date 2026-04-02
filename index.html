@@ -13,10 +13,7 @@
         .drop-zone { border: 3px dashed #3498db; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: #ebf5fb; transition: 0.3s; margin-bottom: 15px; }
         .drop-zone.dragover { background: #d4e6f1; border-color: #2980b9; }
         #status { text-align: center; font-weight: bold; margin-bottom: 20px; min-height: 1.5em; }
-        
-        /* 設定エリアのアニメーション設定（フワッと表示・非表示） */
         .config-section { display: none; opacity: 0; transition: opacity 0.4s ease; }
-        
         .panel { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee; }
         .panel-title { font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; display: flex; justify-content: space-between; align-items: center; }
         .bulk-actions { font-size: 0.8em; font-weight: normal; }
@@ -25,23 +22,17 @@
         .modulation-item { background: white; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9em; }
         .part-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.9em; }
         .global-settings { background: #fff8e1; border: 1px solid #ffe082; }
-        
-        /* 範囲指定UI */
         .range-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         .range-input { width: 70px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
         .range-btn { padding: 4px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
         .range-btn:hover { background: #c0392b; }
         .add-range-btn { padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-top: 5px; }
         .add-range-btn:hover { background: #2980b9; }
-
-        /* タブUI */
         .tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #3498db; }
         .tab-btn { padding: 10px 20px; cursor: pointer; background: #ecf0f1; border: none; border-radius: 8px 8px 0 0; font-weight: bold; color: #7f8c8d; transition: 0.2s; }
         .tab-btn.active { background: #3498db; color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* ピアノ鍵盤UI */
         .custom-map-area { display: none; margin-top: 15px; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
         .piano-wrapper { position: relative; width: 100%; max-width: 800px; height: 180px; display: flex; margin: 20px auto; border: 2px solid #333; border-radius: 4px; border-top: 10px solid #333; }
         .white-key { flex: 1; border-right: 1px solid #ccc; background: #fff; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 10px; z-index: 1; }
@@ -53,38 +44,38 @@
         .black-key { position: absolute; width: calc(100% / 11 * 0.7); height: 60%; background: #222; z-index: 2; border-radius: 0 0 4px 4px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 8px; gap: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
         .black-key.disabled { background: #7f8c8d; box-shadow: none; }
         .black-key input { width: 38px; text-align: center; border: none; border-radius: 2px; background: #eee; color: #333; font-size: 0.8em; font-weight: bold; padding: 2px; }
-        
-        /* 長調用 黒鍵配置 (A B | C D E F G A B | C D) */
-        .maj-bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } 
-        .maj-bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } 
-        .maj-bk-2  { left: calc(100% / 11 * 4 - (100% / 11 * 0.35)); } 
-        .maj-bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } 
-        .maj-bk-4  { left: calc(100% / 11 * 7 - (100% / 11 * 0.35)); } 
-        .maj-bk-5  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } 
+        .maj-bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); }
+        .maj-bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); }
+        .maj-bk-2  { left: calc(100% / 11 * 4 - (100% / 11 * 0.35)); }
+        .maj-bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); }
+        .maj-bk-4  { left: calc(100% / 11 * 7 - (100% / 11 * 0.35)); }
+        .maj-bk-5  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); }
         .maj-bk-d2 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); }
-
-        /* 短調用 黒鍵配置 (F G | A B C D E F G | A B) */
-        .min-bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); } 
-        .min-bk-d2 { left: calc(100% / 11 * 2 - (100% / 11 * 0.35)); } 
-        .min-bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); } 
-        .min-bk-2  { left: calc(100% / 11 * 5 - (100% / 11 * 0.35)); } 
-        .min-bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); } 
-        .min-bk-4  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); } 
-        .min-bk-5  { left: calc(100% / 11 * 9 - (100% / 11 * 0.35)); } 
+        .min-bk-d1 { left: calc(100% / 11 * 1 - (100% / 11 * 0.35)); }
+        .min-bk-d2 { left: calc(100% / 11 * 2 - (100% / 11 * 0.35)); }
+        .min-bk-1  { left: calc(100% / 11 * 3 - (100% / 11 * 0.35)); }
+        .min-bk-2  { left: calc(100% / 11 * 5 - (100% / 11 * 0.35)); }
+        .min-bk-3  { left: calc(100% / 11 * 6 - (100% / 11 * 0.35)); }
+        .min-bk-4  { left: calc(100% / 11 * 8 - (100% / 11 * 0.35)); }
+        .min-bk-5  { left: calc(100% / 11 * 9 - (100% / 11 * 0.35)); }
         .min-bk-d3 { left: calc(100% / 11 * 10 - (100% / 11 * 0.35)); }
-
         button#execBtn { display: block; width: 100%; padding: 15px; font-size: 1.1em; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 20px; }
         button#execBtn:hover { background: #219150; }
         button#execBtn:disabled { background: #95a5a6; cursor: not-allowed; }
         .json-actions { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; display: flex; justify-content: center; gap: 15px; }
         label { cursor: pointer; }
+        .version-info { font-size: 0.8em; color: #999; text-align: center; margin-top: 10px; padding: 5px; background: #f0f0f0; border-radius: 4px; }
+        .warning-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 10px; margin-bottom: 15px; font-size: 0.85em; color: #856404; }
+        .footer-privacy { margin-top: 30px; font-size: 0.8em; color: #888; border-top: 1px solid #eee; padding-top: 15px; text-align: center; }
+        .footer-privacy a { color: #3498db; text-decoration: none; }
+        .footer-privacy a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>🎵 MuseScore 移動ド自動入力ツール</h2>
-    <div class="description">長調・短調、変名表記、カスタムマッピング、部分適用に対応。</div>
+    <div class="description">MuseScore 3 / 4 対応。長調・短調、変名表記、カスタムマッピング、部分適用に対応。</div>
 
     <div class="drop-zone" id="dropZone">
         ここに .mscz ファイルをドロップ または クリックして選択
@@ -92,18 +83,19 @@
     </div>
 
     <div id="status"></div>
+    <div id="versionInfo" class="version-info" style="display:none;"></div>
 
     <div id="configArea" class="config-section">
-        
+
         <div class="panel">
             <div class="panel-title">1. 適用範囲の指定</div>
             <div id="rangeContainer">
                 <div class="range-row">
-                    <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜 
+                    <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜
                     <input type="number" class="range-input" placeholder="終了" min="1"> 小節目
                 </div>
             </div>
-            <button class="add-range-btn" onclick="addRangeRow()">＋ 範囲を追加</button>
+            <button class="add-range-btn" onclick="App.addRangeRow()">＋ 範囲を追加</button>
             <p style="font-size: 0.8em; color: #666; margin-top: 8px;">※ 空欄のままだと「最初から最後まで」全範囲に適用されます。</p>
         </div>
 
@@ -111,7 +103,7 @@
             <div class="panel-title">
                 2. 各区間の調性設定
                 <div class="bulk-actions">
-                    一括設定：<button class="bulk-btn" onclick="setAllModes('major')">すべて長調</button><button class="bulk-btn" onclick="setAllModes('minor')">すべて短調</button>
+                    一括設定：<button class="bulk-btn" onclick="App.setAllModes('major')">すべて長調</button><button class="bulk-btn" onclick="App.setAllModes('minor')">すべて短調</button>
                 </div>
             </div>
             <div id="keyConfigList" class="modulation-grid"></div>
@@ -139,15 +131,15 @@
                 <br><br>
                 <div style="border-top: 1px dashed #d4ac0d; padding-top: 10px; margin-top: 5px;">
                     <label style="font-weight: bold; color: #b9770e;">
-                        <input type="checkbox" id="useCustomMap" onchange="toggleCustomMap()"> 🎹 カスタムマッピング（鍵盤UI）を使用する
+                        <input type="checkbox" id="useCustomMap" onchange="App.toggleCustomMap()"> 🎹 カスタムマッピング（鍵盤UI）を使用する
                     </label>
                 </div>
             </div>
 
             <div id="customMapArea" class="custom-map-area">
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('major')">長調 (Major) 基準: ド</button>
-                    <button class="tab-btn" onclick="switchTab('minor')">短調 (Minor) 基準: ラ/ド</button>
+                    <button class="tab-btn active" onclick="App.switchTab(this, 'major')">長調 (Major) 基準: ド</button>
+                    <button class="tab-btn" onclick="App.switchTab(this, 'minor')">短調 (Minor) 基準: ラ/ド</button>
                 </div>
 
                 <div id="tab-major" class="tab-content active">
@@ -166,8 +158,7 @@
                         <div class="white-key"><span class="wk-label">7度<br>(B)</span><input type="text" id="maj_w7"></div>
                         <div class="white-key disabled"><span class="wk-label disabled">C</span></div>
                         <div class="white-key disabled"><span class="wk-label disabled">D</span></div>
-
-                        <div class="black-key disabled maj-bk-d1"></div> 
+                        <div class="black-key disabled maj-bk-d1"></div>
                         <div class="black-key maj-bk-1"><input type="text" id="maj_b1_s" title="シャープ系(#1)"><input type="text" id="maj_b1_f" title="フラット系(b2)"></div>
                         <div class="black-key maj-bk-2"><input type="text" id="maj_b2_s" title="シャープ系(#2)"><input type="text" id="maj_b2_f" title="フラット系(b3)"></div>
                         <div class="black-key maj-bk-3"><input type="text" id="maj_b3_s" title="シャープ系(#4)"><input type="text" id="maj_b3_f" title="フラット系(b5)"></div>
@@ -193,9 +184,8 @@
                         <div class="white-key"><span class="wk-label">7度<br>(G)</span><input type="text" id="min_w7"></div>
                         <div class="white-key disabled"><span class="wk-label disabled">A</span></div>
                         <div class="white-key disabled"><span class="wk-label disabled">B</span></div>
-
-                        <div class="black-key disabled min-bk-d1"></div> 
-                        <div class="black-key disabled min-bk-d2"></div> 
+                        <div class="black-key disabled min-bk-d1"></div>
+                        <div class="black-key disabled min-bk-d2"></div>
                         <div class="black-key min-bk-1"><input type="text" id="min_b1_s" title="シャープ系(#1)"><input type="text" id="min_b1_f" title="フラット系(b2)"></div>
                         <div class="black-key min-bk-2"><input type="text" id="min_b2_s" title="シャープ系(M3)"><input type="text" id="min_b2_f" title="フラット系(dim4)"></div>
                         <div class="black-key min-bk-3"><input type="text" id="min_b3_s" title="シャープ系(#4)"><input type="text" id="min_b3_f" title="フラット系(b5)"></div>
@@ -206,9 +196,9 @@
                 </div>
 
                 <div class="json-actions">
-                    <button type="button" class="bulk-btn" style="padding: 8px 15px;" onclick="downloadConfig()">💾 設定を保存 (.json)</button>
+                    <button type="button" class="bulk-btn" style="padding: 8px 15px;" onclick="App.downloadConfig()">💾 設定を保存 (.json)</button>
                     <button type="button" class="bulk-btn" style="padding: 8px 15px;" onclick="document.getElementById('importFile').click()">📂 設定を読込</button>
-                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importConfig(this)">
+                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="App.importConfig(this)">
                 </div>
             </div>
         </div>
@@ -217,68 +207,195 @@
     </div>
 </div>
 
+<div class="footer-privacy">
+    <p>🔒 <b>プライバシーについて</b><br>
+    このツールは完全にブラウザ内部で動作し、楽譜データが外部サーバーに送信・保存されることは一切ありません。<br>
+    透明性を保つため、処理の内容はすべて <a href="https://github.com/MidoKaoru/mscz_solfege" target="_blank" rel="noopener noreferrer">GitHubでソースコードを公開</a> しています。</p>
+</div>
+
 <script>
-    let currentZip = null, mscxPath = null, mscxDoc = null, originalFileName = "", modulations = [];
-    let customDict = { major: {}, minor: {} };
+"use strict";
 
-    // TPC距離からUIのIDへのマッピング
+/**
+ * MuseScore 移動ド自動入力ツール v2
+ * 改善点:
+ *   1. グローバル変数を App オブジェクトにカプセル化
+ *   2. パート名の XSS 対策を textContent ベースに変更
+ *   3. 実行処理全体を try-catch で保護、エラー時にボタン復帰
+ *   4. MuseScore 4.2+ の eid 属性を自動検出し、新規 Lyrics 要素にも付与
+ *   5. LastEID の自動更新
+ *   6. TPC 値の範囲チェック追加
+ *   7. MuseScore バージョンの検出と表示
+ */
+const App = (() => {
+    // --- 状態管理 ---
+    let state = {
+        zip: null,
+        mscxPath: null,
+        mscxDoc: null,
+        originalFileName: "",
+        modulations: [],
+        customDict: { major: {}, minor: {} },
+        msVersion: null,     // 検出された MuseScore バージョン文字列
+        usesEid: false,      // eid 属性が使われているか
+        eidIsNumeric: true,  // eid が数値型か英数字型か
+        lastEidValue: 0,     // 数値型 eid の場合の最大値
+        lastEidHex: "",      // 英数字型 eid の場合の最大値
+    };
+
+    // --- TPC→UI ID マッピング ---
     const distToUIMajor = {
-        0: 'maj_w1', 2: 'maj_w2', 4: 'maj_w3', '-1': 'maj_w4', 1: 'maj_w5', 3: 'maj_w6', 5: 'maj_w7',
-        7: 'maj_b1_s', '-5': 'maj_b1_f',
-        9: 'maj_b2_s', '-3': 'maj_b2_f',
-        6: 'maj_b3_s', '-6': 'maj_b3_f',
-        8: 'maj_b4_s', '-4': 'maj_b4_f',
-        10: 'maj_b5_s', '-2': 'maj_b5_f',
-        11: 'maj_w4', '-7': 'maj_w7', 12: 'maj_w1', '-8': 'maj_w3'
+        0:'maj_w1', 2:'maj_w2', 4:'maj_w3', '-1':'maj_w4', 1:'maj_w5', 3:'maj_w6', 5:'maj_w7',
+        7:'maj_b1_s', '-5':'maj_b1_f', 9:'maj_b2_s', '-3':'maj_b2_f',
+        6:'maj_b3_s', '-6':'maj_b3_f', 8:'maj_b4_s', '-4':'maj_b4_f',
+        10:'maj_b5_s', '-2':'maj_b5_f',
+        11:'maj_w4', '-7':'maj_w7', 12:'maj_w1', '-8':'maj_w3'
     };
-
     const distToUIMinor = {
-        0: 'min_w1', 2: 'min_w2', '-3': 'min_w3', '-1': 'min_w4', 1: 'min_w5', '-4': 'min_w6', '-2': 'min_w7',
-        7: 'min_b1_s', '-5': 'min_b1_f',
-        4: 'min_b2_s', '-8': 'min_b2_f', 
-        6: 'min_b3_s', '-6': 'min_b3_f',
-        3: 'min_b4_s', '-9': 'min_b4_f', 
-        5: 'min_b5_s', '-7': 'min_b5_f', 
-        8: 'min_w6', 9: 'min_w3', 10: 'min_w7', '-10': 'min_w2', '-11': 'min_w5'
+        0:'min_w1', 2:'min_w2', '-3':'min_w3', '-1':'min_w4', 1:'min_w5', '-4':'min_w6', '-2':'min_w7',
+        7:'min_b1_s', '-5':'min_b1_f', 4:'min_b2_s', '-8':'min_b2_f',
+        6:'min_b3_s', '-6':'min_b3_f', 3:'min_b4_s', '-9':'min_b4_f',
+        5:'min_b5_s', '-7':'min_b5_f',
+        8:'min_w6', 9:'min_w3', 10:'min_w7', '-10':'min_w2', '-11':'min_w5'
     };
 
-    // デフォルト辞書群
-    const defMajorSuffix = { 'maj_w1':'ド', 'maj_w2':'レ', 'maj_w3':'ミ', 'maj_w4':'ファ', 'maj_w5':'ソ', 'maj_w6':'ラ', 'maj_w7':'シ', 'maj_b1_s':'ド#', 'maj_b1_f':'レ♭', 'maj_b2_s':'レ#', 'maj_b2_f':'ミ♭', 'maj_b3_s':'ファ#', 'maj_b3_f':'ソ♭', 'maj_b4_s':'ソ#', 'maj_b4_f':'ラ♭', 'maj_b5_s':'ラ#', 'maj_b5_f':'シ♭' };
-    const defMajorHemi = { 'maj_w1':'Do', 'maj_w2':'Re', 'maj_w3':'Mi', 'maj_w4':'Fa', 'maj_w5':'So', 'maj_w6':'La', 'maj_w7':'Ti', 'maj_b1_s':'Di', 'maj_b1_f':'Ra', 'maj_b2_s':'Ri', 'maj_b2_f':'Me', 'maj_b3_s':'Fi', 'maj_b3_f':'Se', 'maj_b4_s':'Si', 'maj_b4_f':'Le', 'maj_b5_s':'Li', 'maj_b5_f':'Te' };
-    const defMinorLaSuffix = { 'min_w1':'ラ', 'min_w2':'シ', 'min_w3':'ド', 'min_w4':'レ', 'min_w5':'ミ', 'min_w6':'ファ', 'min_w7':'ソ', 'min_b1_s':'ラ#', 'min_b1_f':'シ♭', 'min_b2_s':'ド#', 'min_b2_f':'レ♭', 'min_b3_s':'レ#', 'min_b3_f':'ミ♭', 'min_b4_s':'ファ#', 'min_b4_f':'ソ♭', 'min_b5_s':'ソ#', 'min_b5_f':'ラ♭' };
-    const defMinorLaHemi = { 'min_w1':'La', 'min_w2':'Ti', 'min_w3':'Do', 'min_w4':'Re', 'min_w5':'Mi', 'min_w6':'Fa', 'min_w7':'So', 'min_b1_s':'Li', 'min_b1_f':'Te', 'min_b2_s':'Di', 'min_b2_f':'Ra', 'min_b3_s':'Ri', 'min_b3_f':'Me', 'min_b4_s':'Fi', 'min_b4_f':'Se', 'min_b5_s':'Si', 'min_b5_f':'Le' };
-    const defMinorDoSuffix = { 'min_w1':'ド', 'min_w2':'レ', 'min_w3':'ミ♭', 'min_w4':'ファ', 'min_w5':'ソ', 'min_w6':'ラ♭', 'min_w7':'シ♭', 'min_b1_s':'ド#', 'min_b1_f':'レ♭', 'min_b2_s':'ミ', 'min_b2_f':'ファ♭', 'min_b3_s':'ファ#', 'min_b3_f':'ソ♭', 'min_b4_s':'ラ', 'min_b4_f':'シ♭♭', 'min_b5_s':'シ', 'min_b5_f':'ド♭' };
-    const defMinorDoHemi = { 'min_w1':'Do', 'min_w2':'Re', 'min_w3':'Me', 'min_w4':'Fa', 'min_w5':'So', 'min_w6':'Le', 'min_w7':'Te', 'min_b1_s':'Di', 'min_b1_f':'Ra', 'min_b2_s':'Mi', 'min_b2_f':'Mi', 'min_b3_s':'Fi', 'min_b3_f':'Se', 'min_b4_s':'La', 'min_b4_f':'Le', 'min_b5_s':'Ti', 'min_b5_f':'Ti' };
+    // --- デフォルト辞書群 ---
+    const DICTS = {
+        majSuffix: { maj_w1:'ド', maj_w2:'レ', maj_w3:'ミ', maj_w4:'ファ', maj_w5:'ソ', maj_w6:'ラ', maj_w7:'シ', maj_b1_s:'ド#', maj_b1_f:'レ♭', maj_b2_s:'レ#', maj_b2_f:'ミ♭', maj_b3_s:'ファ#', maj_b3_f:'ソ♭', maj_b4_s:'ソ#', maj_b4_f:'ラ♭', maj_b5_s:'ラ#', maj_b5_f:'シ♭' },
+        majHemi: { maj_w1:'Do', maj_w2:'Re', maj_w3:'Mi', maj_w4:'Fa', maj_w5:'So', maj_w6:'La', maj_w7:'Ti', maj_b1_s:'Di', maj_b1_f:'Ra', maj_b2_s:'Ri', maj_b2_f:'Me', maj_b3_s:'Fi', maj_b3_f:'Se', maj_b4_s:'Si', maj_b4_f:'Le', maj_b5_s:'Li', maj_b5_f:'Te' },
+        minLaSuffix: { min_w1:'ラ', min_w2:'シ', min_w3:'ド', min_w4:'レ', min_w5:'ミ', min_w6:'ファ', min_w7:'ソ', min_b1_s:'ラ#', min_b1_f:'シ♭', min_b2_s:'ド#', min_b2_f:'レ♭', min_b3_s:'レ#', min_b3_f:'ミ♭', min_b4_s:'ファ#', min_b4_f:'ソ♭', min_b5_s:'ソ#', min_b5_f:'ラ♭' },
+        minLaHemi: { min_w1:'La', min_w2:'Ti', min_w3:'Do', min_w4:'Re', min_w5:'Mi', min_w6:'Fa', min_w7:'So', min_b1_s:'Li', min_b1_f:'Te', min_b2_s:'Di', min_b2_f:'Ra', min_b3_s:'Ri', min_b3_f:'Me', min_b4_s:'Fi', min_b4_f:'Se', min_b5_s:'Si', min_b5_f:'Le' },
+        minDoSuffix: { min_w1:'ド', min_w2:'レ', min_w3:'ミ♭', min_w4:'ファ', min_w5:'ソ', min_w6:'ラ♭', min_w7:'シ♭', min_b1_s:'ド#', min_b1_f:'レ♭', min_b2_s:'ミ', min_b2_f:'ファ♭', min_b3_s:'ファ#', min_b3_f:'ソ♭', min_b4_s:'ラ', min_b4_f:'シ♭♭', min_b5_s:'シ', min_b5_f:'ド♭' },
+        minDoHemi: { min_w1:'Do', min_w2:'Re', min_w3:'Me', min_w4:'Fa', min_w5:'So', min_w6:'Le', min_w7:'Te', min_b1_s:'Di', min_b1_f:'Ra', min_b2_s:'Mi', min_b2_f:'Mi', min_b3_s:'Fi', min_b3_f:'Se', min_b4_s:'La', min_b4_f:'Le', min_b5_s:'Ti', min_b5_f:'Ti' }
+    };
 
-    // タブ切り替え処理
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        event.target.classList.add('active');
-        document.getElementById('tab-' + tabId).classList.add('active');
+    // --- eid 生成ユーティリティ ---
+    function generateNextEid() {
+        if (!state.usesEid) return null;
+        if (state.eidIsNumeric) {
+            state.lastEidValue++;
+            return String(state.lastEidValue);
+        } else {
+            // 英数字型: hex を1ずつインクリメント
+            let val = BigInt("0x" + state.lastEidHex) + 1n;
+            state.lastEidHex = val.toString(16);
+            return state.lastEidHex;
+        }
     }
 
-    // 範囲指定UI
-    function addRangeRow() {
-        const container = document.getElementById('rangeContainer');
-        const row = document.createElement('div');
-        row.className = 'range-row';
-        row.innerHTML = `
-            <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜 
-            <input type="number" class="range-input" placeholder="終了" min="1"> 小節目 
-            <button class="range-btn" onclick="this.parentElement.remove()">削除</button>`;
-        container.appendChild(row);
+    function updateLastEID() {
+        if (!state.usesEid || !state.mscxDoc) return;
+        const lastEidEl = state.mscxDoc.getElementsByTagName('LastEID')[0];
+        if (lastEidEl) {
+            if (state.eidIsNumeric) {
+                lastEidEl.textContent = String(state.lastEidValue);
+            } else {
+                lastEidEl.textContent = state.lastEidHex;
+            }
+        }
     }
 
+    // eid 属性の有無と形式を検出
+    function detectEidFormat(doc) {
+        state.usesEid = false;
+        state.eidIsNumeric = true;
+        state.lastEidValue = 0;
+        state.lastEidHex = "0";
+
+        const lastEidEl = doc.getElementsByTagName('LastEID')[0];
+        if (!lastEidEl) return;
+
+        const lastEidText = (lastEidEl.textContent || "").trim();
+        if (!lastEidText) return;
+
+        state.usesEid = true;
+
+        // 数値のみか、英数字混在かを判定
+        if (/^\d+$/.test(lastEidText)) {
+            state.eidIsNumeric = true;
+            state.lastEidValue = parseInt(lastEidText, 10);
+        } else {
+            state.eidIsNumeric = false;
+            state.lastEidHex = lastEidText;
+        }
+    }
+
+    // MuseScore バージョンの検出
+    function detectVersion(doc) {
+        const pv = doc.getElementsByTagName('programVersion')[0];
+        state.msVersion = pv ? pv.textContent.trim() : null;
+        const vi = document.getElementById('versionInfo');
+        if (state.msVersion) {
+            vi.textContent = `検出バージョン: MuseScore ${state.msVersion}` +
+                (state.usesEid ? ` (eid属性: ${state.eidIsNumeric ? '数値型' : '英数字型'})` : ' (eid属性: なし)');
+            vi.style.display = 'block';
+        } else {
+            vi.style.display = 'none';
+        }
+    }
+
+    // --- DOM ヘルパー ---
+    function $(id) { return document.getElementById(id); }
+    function $q(sel) { return document.querySelector(sel); }
+    function $qa(sel) { return document.querySelectorAll(sel); }
+
+    function showStatus(color, msg) {
+        const s = $('status');
+        s.style.color = color;
+        s.innerText = msg;
+    }
+
+    // パート名をHTMLから安全にテキスト抽出
+    function safePartName(partEl, idx) {
+        const raw = partEl.getElementsByTagName('longName')[0]?.textContent
+            || partEl.getElementsByTagName('trackName')[0]?.textContent
+            || `Part ${idx + 1}`;
+        // DOM 操作でタグを除去（正規表現より安全）
+        const tmp = document.createElement('div');
+        tmp.innerHTML = raw;
+        return tmp.textContent.trim();
+    }
+
+    // TPC 値の妥当性チェック（-1〜33 が MuseScore の有効範囲）
+    function isValidTpc(tpc) {
+        return Number.isInteger(tpc) && tpc >= -1 && tpc <= 33;
+    }
+
+    // --- Lyrics 追加（eid 対応版）---
+    function addLyrics(xml, chordNode, txt) {
+        const existing = Array.from(chordNode.getElementsByTagName('Lyrics'))
+            .find(l => l.getElementsByTagName('no')[0]?.textContent === "1");
+
+        if (existing) {
+            const t = existing.getElementsByTagName('text')[0];
+            if (t) t.textContent += " " + txt;
+        } else {
+            const lyr = xml.createElement('Lyrics');
+            // eid 属性を付与（MuseScore 4.2+ 対応）
+            const newEid = generateNextEid();
+            if (newEid) {
+                lyr.setAttribute('eid', newEid);
+            }
+            const no = xml.createElement('no');
+            no.textContent = "1";
+            const t = xml.createElement('text');
+            t.textContent = txt;
+            lyr.appendChild(no);
+            lyr.appendChild(t);
+            chordNode.appendChild(lyr);
+        }
+    }
+
+    // --- 範囲チェック ---
     function getRanges() {
-        const rows = document.querySelectorAll('.range-row');
+        const rows = $qa('.range-row');
         const ranges = [];
         rows.forEach(row => {
             const inputs = row.querySelectorAll('input');
-            const start = parseInt(inputs[0].value);
-            const end = parseInt(inputs[1].value);
-            if (!isNaN(start) || !isNaN(end)) {
-                ranges.push({ start: isNaN(start) ? 1 : start, end: isNaN(end) ? Infinity : end });
+            const s = parseInt(inputs[0].value);
+            const e = parseInt(inputs[1].value);
+            if (!isNaN(s) || !isNaN(e)) {
+                ranges.push({ start: isNaN(s) ? 1 : s, end: isNaN(e) ? Infinity : e });
             }
         });
         return ranges;
@@ -286,284 +403,394 @@
 
     function isMeasureInRange(mIdx, ranges) {
         if (ranges.length === 0) return true;
-        const mNum = mIdx + 1;
-        return ranges.some(r => mNum >= r.start && mNum <= r.end);
+        const num = mIdx + 1;
+        return ranges.some(r => num >= r.start && num <= r.end);
     }
 
-    // UI連動
-    document.querySelectorAll('input[name="solfegeSystem"], input[name="namingStyle"]').forEach(el => {
-        el.addEventListener('change', () => { if (document.getElementById('useCustomMap').checked) updateKeyboardDefaults(); });
-    });
+    // --- 階名解決 ---
+    function resolveSolfege(tpc, accidentals, isMinor, activeDict) {
+        const rootTpc = isMinor ? (14 + accidentals + 3) : (14 + accidentals);
+        const diff = tpc - rootTpc;
+        const map = isMinor ? distToUIMinor : distToUIMajor;
+        const dict = isMinor ? activeDict.minor : activeDict.major;
+        const uiId = map[diff];
+        return uiId ? (dict[uiId] || "?") : "?";
+    }
 
-    function toggleCustomMap() {
-        const isChecked = document.getElementById('useCustomMap').checked;
-        document.getElementById('customMapArea').style.display = isChecked ? 'block' : 'none';
-        if (isChecked) updateKeyboardDefaults();
+    // --- UI 連動 ---
+    function getSelectedRadio(name) {
+        return $q(`input[name="${name}"]:checked`)?.value;
     }
 
     function updateKeyboardDefaults() {
-        const style = document.querySelector('input[name="namingStyle"]:checked').value;
-        const minorSys = document.querySelector('input[name="solfegeSystem"]:checked').value;
-        
-        const majDict = style === 'hemi' ? defMajorHemi : defMajorSuffix;
-        const minDict = style === 'hemi' ? (minorSys === 'la' ? defMinorLaHemi : defMinorDoHemi) : (minorSys === 'la' ? defMinorLaSuffix : defMinorDoSuffix);
-        
-        Object.keys(majDict).forEach(id => { const el = document.getElementById(id); if (el) el.value = majDict[id]; });
-        Object.keys(minDict).forEach(id => { const el = document.getElementById(id); if (el) el.value = minDict[id]; });
+        const style = getSelectedRadio('namingStyle');
+        const minSys = getSelectedRadio('solfegeSystem');
+        const majDict = style === 'hemi' ? DICTS.majHemi : DICTS.majSuffix;
+        const minDict = style === 'hemi'
+            ? (minSys === 'la' ? DICTS.minLaHemi : DICTS.minDoHemi)
+            : (minSys === 'la' ? DICTS.minLaSuffix : DICTS.minDoSuffix);
+        for (const [id, val] of Object.entries(majDict)) { const el = $(id); if (el) el.value = val; }
+        for (const [id, val] of Object.entries(minDict)) { const el = $(id); if (el) el.value = val; }
     }
 
-    function downloadConfig() {
-        updateCustomDictFromUI();
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([JSON.stringify(customDict, null, 2)], {type: "application/json"}));
-        a.download = "musescore_piano_config.json"; a.click();
-    }
-    
-    function importConfig(input) {
-        if(!input.files.length) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const loaded = JSON.parse(e.target.result);
-                if (!loaded.major || !loaded.minor) {
-                    alert("古い形式、または不正な形式のファイルです。新しく設定を作り直してください。");
-                    return;
-                }
-                customDict = loaded;
-                Object.keys(customDict.major).forEach(id => { const el = document.getElementById(id); if(el) el.value = customDict.major[id]; });
-                Object.keys(customDict.minor).forEach(id => { const el = document.getElementById(id); if(el) el.value = customDict.minor[id]; });
-                showStatus('green', 'カスタム設定を読み込みました');
-            } catch(err) { showStatus('red', '読込失敗'); }
-            input.value = ""; // リセット
-        };
-        reader.readAsText(input.files[0]);
-    }
-    
     function updateCustomDictFromUI() {
-        customDict = { major: {}, minor: {} };
-        Object.values(distToUIMajor).forEach(id => { const el = document.getElementById(id); if(el) customDict.major[id] = el.value; });
-        Object.values(distToUIMinor).forEach(id => { const el = document.getElementById(id); if(el) customDict.minor[id] = el.value; });
+        state.customDict = { major: {}, minor: {} };
+        for (const id of Object.values(distToUIMajor)) { const el = $(id); if (el) state.customDict.major[id] = el.value; }
+        for (const id of Object.values(distToUIMinor)) { const el = $(id); if (el) state.customDict.minor[id] = el.value; }
     }
 
-    // --- アプリの初期化 (楽譜データのみリセット) ---
-    function resetApp() {
-        currentZip = null;
-        mscxPath = null;
-        mscxDoc = null;
-        originalFileName = "";
-        modulations = [];
-        
-        const configArea = document.getElementById('configArea');
-        // CSSのアニメーション用にopacityとdisplayをリセット
-        configArea.style.opacity = '0';
-        configArea.style.display = 'none';
-        
-        document.getElementById('partList').innerHTML = '';
-        document.getElementById('keyConfigList').innerHTML = '';
-        
-        // 範囲指定を初期状態（1行の空欄）に戻す
-        document.getElementById('rangeContainer').innerHTML = `
-            <div class="range-row">
-                <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜 
-                <input type="number" class="range-input" placeholder="終了" min="1"> 小節目
-            </div>`;
-            
-        // ボタンを活性化してテキストを戻す
-        const btn = document.getElementById('execBtn');
-        btn.disabled = false;
-        btn.innerText = '移動ドを書き込んでダウンロード';
-        
-        // ファイル入力をリセット
-        document.getElementById('fileInput').value = '';
-    }
-
-    // --- ファイル解析・実行 ---
-    const dropZone = document.getElementById('dropZone'), fileInput = document.getElementById('fileInput');
-    dropZone.onclick = () => fileInput.click();
-    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
-    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
-    dropZone.ondrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); };
-    fileInput.onchange = (e) => handleFile(e.target.files[0]);
-
-    function setAllModes(mode) {
-        modulations.forEach((_, i) => { const r = document.querySelector(`input[name="mode_${i}"][value="${mode}"]`); if (r) r.checked = true; });
-    }
-
-    async function handleFile(file) {
-        if (!file || !file.name.endsWith('.mscz')) return;
-        
-        // 新しいファイルが来たら瞬時に前回の残骸を消す（コンフリクト完全防止）
-        resetApp(); 
-        
-        originalFileName = file.name.replace('.mscz', '');
-        showStatus('blue', '解析中...');
-        try {
-            currentZip = await JSZip.loadAsync(file);
-            mscxPath = new DOMParser().parseFromString(await currentZip.file("META-INF/container.xml").async("string"), "text/xml").getElementsByTagName("rootfile")[0].getAttribute("full-path");
-            mscxDoc = new DOMParser().parseFromString(await currentZip.file(mscxPath).async("string"), "text/xml");
-
-            const staves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
-            partList.innerHTML = Array.from(mscxDoc.getElementsByTagName('Part')).map((p, i) => {
-                let name = p.getElementsByTagName('longName')[0]?.textContent || p.getElementsByTagName('trackName')[0]?.textContent || `Part ${i+1}`;
-                return `<label><input type="checkbox" name="targetPart" value="${i}" checked> ${name.replace(/<[^>]*>?/gm, '').trim()}</label>`;
-            }).join('');
-
-            modulations = [];
-            const ms = staves[0].getElementsByTagName('Measure');
-            let lastA = null;
-            for (let m = 0; m < ms.length; m++) {
-                const ks = ms[m].getElementsByTagName('KeySig')[0];
-                const acc = ks ? parseInt(ks.getElementsByTagName('accidental')[0]?.textContent || "0") : (m === 0 ? 0 : null);
-                if (acc !== null && acc !== lastA) { lastA = acc; modulations.push({ idx: m, label: m === 0 ? "最初" : `${m+1}小節` }); }
-            }
-            keyConfigList.innerHTML = modulations.map((m, i) => `<div class="modulation-item"><b>📍 ${m.label}</b><br><label><input type="radio" name="mode_${i}" value="major" checked> 長調</label><label style="margin-left:10px;"><input type="radio" name="mode_${i}" value="minor"> 短調</label></div>`).join('');
-            
-            // アニメーション付きで設定エリアを表示
-            const configArea = document.getElementById('configArea');
-            configArea.style.display = 'block';
-            setTimeout(() => { configArea.style.opacity = '1'; }, 10);
-            
-            showStatus('green', 'ファイルを読み込みました。');
-        } catch (e) { showStatus('red', 'エラー: ' + e.message); }
-    }
-
-    document.getElementById('execBtn').onclick = async function() {
-        // ボタンを無効化して二重クリックを防止
-        this.disabled = true;
-        this.innerText = '処理中...';
-        
-        const selectedParts = Array.from(document.querySelectorAll('input[name="targetPart"]:checked')).map(cb => parseInt(cb.value));
-        const style = document.querySelector('input[name="namingStyle"]:checked').value;
-        const minorSys = document.querySelector('input[name="solfegeSystem"]:checked').value;
-        const repeatStyle = document.querySelector('input[name="repeatStyle"]:checked').value; // 追加: 連続時の設定
-        const useCustom = document.getElementById('useCustomMap').checked;
-        const userConfigs = modulations.map((_, i) => document.querySelector(`input[name="mode_${i}"]:checked`).value === 'minor');
-        const targetRanges = getRanges();
-        
-        const activeDict = { major: {}, minor: {} };
+    function buildActiveDict() {
+        const style = getSelectedRadio('namingStyle');
+        const minSys = getSelectedRadio('solfegeSystem');
+        const useCustom = $('useCustomMap').checked;
+        const dict = { major: {}, minor: {} };
         if (useCustom) {
             updateCustomDictFromUI();
-            activeDict.major = Object.assign({}, customDict.major);
-            activeDict.minor = Object.assign({}, customDict.minor);
+            Object.assign(dict.major, state.customDict.major);
+            Object.assign(dict.minor, state.customDict.minor);
         } else {
-            activeDict.major = style === 'hemi' ? defMajorHemi : defMajorSuffix;
-            activeDict.minor = style === 'hemi' ? (minorSys === 'la' ? defMinorLaHemi : defMinorDoHemi) : (minorSys === 'la' ? defMinorLaSuffix : defMinorDoSuffix);
+            Object.assign(dict.major, style === 'hemi' ? DICTS.majHemi : DICTS.majSuffix);
+            Object.assign(dict.minor, style === 'hemi'
+                ? (minSys === 'la' ? DICTS.minLaHemi : DICTS.minDoHemi)
+                : (minSys === 'la' ? DICTS.minLaSuffix : DICTS.minDoSuffix));
         }
+        return dict;
+    }
 
-        const musicStaves = Array.from(mscxDoc.getElementsByTagName('Staff')).filter(s => s.getElementsByTagName('Measure').length > 0);
+    // --- リセット ---
+    function resetState() {
+        state.zip = null;
+        state.mscxPath = null;
+        state.mscxDoc = null;
+        state.originalFileName = "";
+        state.modulations = [];
+        state.msVersion = null;
+        state.usesEid = false;
 
-        selectedParts.forEach(idx => {
-            const staff = musicStaves[idx];
-            let prevA = null, currA = 0, prevS = null, tied = false, pivot = false;
-            let slurDepth = 0;
+        const cfg = $('configArea');
+        cfg.style.opacity = '0';
+        cfg.style.display = 'none';
 
-            const ms = staff.getElementsByTagName('Measure');
-            for (let m = 0; m < ms.length; m++) {
-                const modIdx = modulations.reduce((p, c, i) => (m >= c.idx ? i : p), 0);
-                const isMinor = userConfigs[modIdx];
-                const ks = ms[m].getElementsByTagName('KeySig')[0];
-                if (ks) { const acc = parseInt(ks.getElementsByTagName('accidental')[0]?.textContent || "0"); if (acc !== currA) { prevA = currA; currA = acc; pivot = (m > 0); } }
+        $('partList').innerHTML = '';
+        $('keyConfigList').innerHTML = '';
+        $('versionInfo').style.display = 'none';
 
-                const chords = ms[m].getElementsByTagName('Chord');
-                for (let c = 0; c < chords.length; c++) {
-                    const notes = chords[c].getElementsByTagName('Note');
-                    if (notes.length !== 1) { tied = false; continue; }
-                    const tpc = parseInt(notes[0].getElementsByTagName('tpc')[0].textContent);
-                    const nextTied = notes[0].getElementsByTagName('Tie').length > 0;
+        $('rangeContainer').innerHTML = `
+            <div class="range-row">
+                <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜
+                <input type="number" class="range-input" placeholder="終了" min="1"> 小節目
+            </div>`;
 
-                    let startsSlur = false, endsSlur = false;
-                    const spanners = Array.from(chords[c].getElementsByTagName('Spanner')).filter(s => s.getAttribute('type') === 'Slur');
-                    spanners.forEach(sp => {
-                        if (sp.getElementsByTagName('Slur').length > 0) startsSlur = true;
-                        if (sp.getElementsByTagName('prev').length > 0) endsSlur = true;
-                    });
+        const btn = $('execBtn');
+        btn.disabled = false;
+        btn.innerText = '移動ドを書き込んでダウンロード';
+        $('fileInput').value = '';
+    }
 
-                    const isMelismaContinuation = (slurDepth > 0) && !startsSlur;
-                    if (startsSlur) slurDepth++;
-                    if (endsSlur) slurDepth = Math.max(0, slurDepth - 1);
+    // --- ファイル読み込み ---
+    async function handleFile(file) {
+        if (!file || !file.name.endsWith('.mscz')) return;
+        resetState();
+        state.originalFileName = file.name.replace('.mscz', '');
+        showStatus('blue', '解析中...');
 
-                    const getS = (t, a, mFlag) => {
-                        let rootTpc = 14 + a;
-                        if (!mFlag) {
-                            const diff = t - rootTpc;
-                            const uiId = distToUIMajor[diff];
-                            return uiId ? (activeDict.major[uiId] || "?") : "?";
-                        } else {
-                            rootTpc += 3; 
-                            const diff = t - rootTpc;
-                            const uiId = distToUIMinor[diff];
-                            return uiId ? (activeDict.minor[uiId] || "?") : "?";
-                        }
-                    };
+        try {
+            state.zip = await JSZip.loadAsync(file);
 
-                    let syl = getS(tpc, currA, isMinor);
-                    let txt = syl;
-                    let doP = false;
-                    
-                    const isContinuous = tied || isMelismaContinuation;
+            const containerFile = state.zip.file("META-INF/container.xml");
+            if (!containerFile) throw new Error("META-INF/container.xml が見つかりません。有効な .mscz ファイルか確認してください。");
 
-                    // 出力パターンの分岐ロジック
-                    if (pivot && !isContinuous) {
-                        // 調号変更の境界（新しい発音）
-                        txt = `(${getS(tpc, prevA, userConfigs[Math.max(0, modIdx-1)])}→)${syl}`;
-                        doP = true;
-                        pivot = false;
-                    } else if (isContinuous) {
-                        // タイまたはスラー継続中
-                        if (syl === prevS) {
-                            txt = "＿"; // 同じ音なら全角アンダーバー
-                        } else {
-                            txt = `(${syl})`; // 音程が変わった（メリスマ）
-                        }
-                        doP = true;
-                    } else {
-                        // 通常（新しい発音）
-                        if (prevS === null) {
-                            doP = true; // 最初の音は必ず出力
-                        } else if (syl === prevS) {
-                            // 同音連続時の設定判定
-                            doP = (repeatStyle === 'always');
-                        } else {
-                            doP = true; // 違う音に動いた
-                        }
-                    }
+            const containerXml = new DOMParser().parseFromString(
+                await containerFile.async("string"), "text/xml"
+            );
+            const rootFile = containerXml.getElementsByTagName("rootfile")[0];
+            if (!rootFile) throw new Error("container.xml 内に rootfile が見つかりません。");
 
-                    if (doP) {
-                        if (isMeasureInRange(m, targetRanges)) addLyrics(mscxDoc, chords[c], txt);
-                    }
-                    
-                    prevS = syl; 
-                    tied = nextTied;
+            state.mscxPath = rootFile.getAttribute("full-path");
+            const mscxFile = state.zip.file(state.mscxPath);
+            if (!mscxFile) throw new Error(`楽譜ファイル "${state.mscxPath}" が ZIP 内に見つかりません。`);
+
+            state.mscxDoc = new DOMParser().parseFromString(
+                await mscxFile.async("string"), "text/xml"
+            );
+
+            // パースエラーチェック
+            const parseError = state.mscxDoc.getElementsByTagName('parsererror')[0];
+            if (parseError) throw new Error("楽譜 XML のパースに失敗しました: " + parseError.textContent);
+
+            // eid 検出
+            detectEidFormat(state.mscxDoc);
+            detectVersion(state.mscxDoc);
+
+            // パートリスト生成（textContent ベースで安全）
+            const partListEl = $('partList');
+            const parts = Array.from(state.mscxDoc.getElementsByTagName('Part'));
+            parts.forEach((p, i) => {
+                const name = safePartName(p, i);
+                const label = document.createElement('label');
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.name = 'targetPart';
+                cb.value = String(i);
+                cb.checked = true;
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(' ' + name));
+                partListEl.appendChild(label);
+            });
+
+            // 転調検出
+            const staves = Array.from(state.mscxDoc.getElementsByTagName('Staff'))
+                .filter(s => s.getElementsByTagName('Measure').length > 0);
+            if (staves.length === 0) throw new Error("楽譜にスタッフが見つかりません。");
+
+            state.modulations = [];
+            const measures = staves[0].getElementsByTagName('Measure');
+            let lastAcc = null;
+            for (let m = 0; m < measures.length; m++) {
+                const ks = measures[m].getElementsByTagName('KeySig')[0];
+                const accEl = ks ? ks.getElementsByTagName('accidental')[0] : null;
+                const acc = accEl ? parseInt(accEl.textContent || "0") : (m === 0 ? 0 : null);
+                if (acc !== null && acc !== lastAcc) {
+                    lastAcc = acc;
+                    state.modulations.push({ idx: m, label: m === 0 ? "最初" : `${m + 1}小節` });
                 }
             }
-        });
 
-        const blob = await currentZip.file(mscxPath, new XMLSerializer().serializeToString(mscxDoc)).generateAsync({type:"blob"});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `${originalFileName}_solfege.mscz`; a.click();
-        
-        // --- 設定エリアをフワッと消して、完了後にリセット ---
-        const configArea = document.getElementById('configArea');
-        configArea.style.opacity = '0'; // フェードアウト開始
-        
-        setTimeout(() => {
-            resetApp(); // アニメーション終了後に完全にDOMとデータをリセット
-            showStatus('green', '完了しました！次のファイルをドロップしてください。');
-        }, 400); // 0.4秒待機（CSSのtransition時間と合わせる）
-    };
+            $('keyConfigList').innerHTML = state.modulations.map((mod, i) =>
+                `<div class="modulation-item"><b>📍 ${mod.label}</b><br>` +
+                `<label><input type="radio" name="mode_${i}" value="major" checked> 長調</label>` +
+                `<label style="margin-left:10px;"><input type="radio" name="mode_${i}" value="minor"> 短調</label></div>`
+            ).join('');
 
-    function addLyrics(xml, node, txt) {
-        const lyrics = Array.from(node.getElementsByTagName('Lyrics')).find(l => l.getElementsByTagName('no')[0]?.textContent === "1");
-        if (lyrics) {
-            const t = lyrics.getElementsByTagName('text')[0];
-            if (t) t.textContent += " " + txt;
-        } else {
-            const lyr = xml.createElement('Lyrics'), no = xml.createElement('no'), t = xml.createElement('text');
-            no.textContent = "1"; t.textContent = txt;
-            lyr.appendChild(no); lyr.appendChild(t); node.appendChild(lyr);
+            // 設定エリア表示
+            const cfg = $('configArea');
+            cfg.style.display = 'block';
+            requestAnimationFrame(() => { cfg.style.opacity = '1'; });
+
+            showStatus('green', 'ファイルを読み込みました。');
+
+        } catch (e) {
+            showStatus('red', 'エラー: ' + e.message);
+            console.error(e);
         }
     }
-    function showStatus(c, m) { const s = document.getElementById('status'); s.style.color = c; s.innerText = m; }
+
+    // --- 実行処理 ---
+    async function execute() {
+        const btn = $('execBtn');
+        btn.disabled = true;
+        btn.innerText = '処理中...';
+
+        try {
+            const selectedParts = Array.from($qa('input[name="targetPart"]:checked'))
+                .map(cb => parseInt(cb.value));
+            const repeatStyle = getSelectedRadio('repeatStyle');
+            const userConfigs = state.modulations.map((_, i) =>
+                $q(`input[name="mode_${i}"]:checked`).value === 'minor'
+            );
+            const targetRanges = getRanges();
+            const activeDict = buildActiveDict();
+
+            const musicStaves = Array.from(state.mscxDoc.getElementsByTagName('Staff'))
+                .filter(s => s.getElementsByTagName('Measure').length > 0);
+
+            for (const idx of selectedParts) {
+                if (idx >= musicStaves.length) continue;
+                const staff = musicStaves[idx];
+                let prevAcc = null, currAcc = 0, prevSyl = null, tied = false, pivot = false;
+                let slurDepth = 0;
+
+                const measures = staff.getElementsByTagName('Measure');
+                for (let m = 0; m < measures.length; m++) {
+                    const modIdx = state.modulations.reduce((p, c, i) => (m >= c.idx ? i : p), 0);
+                    const isMinor = userConfigs[modIdx];
+
+                    const ks = measures[m].getElementsByTagName('KeySig')[0];
+                    if (ks) {
+                        const accEl = ks.getElementsByTagName('accidental')[0];
+                        const acc = parseInt(accEl?.textContent || "0");
+                        if (acc !== currAcc) { prevAcc = currAcc; currAcc = acc; pivot = (m > 0); }
+                    }
+
+                    const chords = measures[m].getElementsByTagName('Chord');
+                    for (let c = 0; c < chords.length; c++) {
+                        const notes = chords[c].getElementsByTagName('Note');
+                        if (notes.length !== 1) { tied = false; continue; }
+
+                        const tpcEl = notes[0].getElementsByTagName('tpc')[0];
+                        if (!tpcEl) { tied = false; continue; }
+                        const tpc = parseInt(tpcEl.textContent);
+                        if (!isValidTpc(tpc)) { tied = false; continue; }
+
+                        const nextTied = notes[0].getElementsByTagName('Tie').length > 0;
+
+                        let startsSlur = false, endsSlur = false;
+                        const spanners = Array.from(chords[c].getElementsByTagName('Spanner'))
+                            .filter(s => s.getAttribute('type') === 'Slur');
+                        for (const sp of spanners) {
+                            if (sp.getElementsByTagName('Slur').length > 0) startsSlur = true;
+                            if (sp.getElementsByTagName('prev').length > 0) endsSlur = true;
+                        }
+
+                        const isMelismaCont = (slurDepth > 0) && !startsSlur;
+                        if (startsSlur) slurDepth++;
+                        if (endsSlur) slurDepth = Math.max(0, slurDepth - 1);
+
+                        const syl = resolveSolfege(tpc, currAcc, isMinor, activeDict);
+                        let txt = syl;
+                        let doOutput = false;
+                        const isContinuous = tied || isMelismaCont;
+
+                        if (pivot && !isContinuous) {
+                            const prevMinor = userConfigs[Math.max(0, modIdx - 1)];
+                            txt = `(${resolveSolfege(tpc, prevAcc, prevMinor, activeDict)}→)${syl}`;
+                            doOutput = true;
+                            pivot = false;
+                        } else if (isContinuous) {
+                            txt = (syl === prevSyl) ? "＿" : `(${syl})`;
+                            doOutput = true;
+                        } else {
+                            if (prevSyl === null) {
+                                doOutput = true;
+                            } else if (syl === prevSyl) {
+                                doOutput = (repeatStyle === 'always');
+                            } else {
+                                doOutput = true;
+                            }
+                        }
+
+                        if (doOutput && isMeasureInRange(m, targetRanges)) {
+                            addLyrics(state.mscxDoc, chords[c], txt);
+                        }
+
+                        prevSyl = syl;
+                        tied = nextTied;
+                    }
+                }
+            }
+
+            // LastEID を更新
+            updateLastEID();
+
+            // mscx を ZIP に書き戻してダウンロード
+            const serialized = new XMLSerializer().serializeToString(state.mscxDoc);
+            state.zip.file(state.mscxPath, serialized);
+            const blob = await state.zip.generateAsync({ type: "blob" });
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${state.originalFileName}_solfege.mscz`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+
+            // フェードアウト → リセット
+            const cfg = $('configArea');
+            cfg.style.opacity = '0';
+            setTimeout(() => {
+                resetState();
+                showStatus('green', '完了しました！次のファイルをドロップしてください。');
+            }, 400);
+
+        } catch (e) {
+            showStatus('red', '処理エラー: ' + e.message);
+            console.error(e);
+            btn.disabled = false;
+            btn.innerText = '移動ドを書き込んでダウンロード';
+        }
+    }
+
+    // --- 公開 API ---
+    return {
+        addRangeRow() {
+            const container = $('rangeContainer');
+            const row = document.createElement('div');
+            row.className = 'range-row';
+            row.innerHTML = `
+                <input type="number" class="range-input" placeholder="開始" min="1"> 小節目 〜
+                <input type="number" class="range-input" placeholder="終了" min="1"> 小節目
+                <button class="range-btn" onclick="this.parentElement.remove()">削除</button>`;
+            container.appendChild(row);
+        },
+
+        setAllModes(mode) {
+            state.modulations.forEach((_, i) => {
+                const r = $q(`input[name="mode_${i}"][value="${mode}"]`);
+                if (r) r.checked = true;
+            });
+        },
+
+        switchTab(btnEl, tabId) {
+            $qa('.tab-btn').forEach(b => b.classList.remove('active'));
+            $qa('.tab-content').forEach(c => c.classList.remove('active'));
+            btnEl.classList.add('active');
+            $('tab-' + tabId).classList.add('active');
+        },
+
+        toggleCustomMap() {
+            const isChecked = $('useCustomMap').checked;
+            $('customMapArea').style.display = isChecked ? 'block' : 'none';
+            if (isChecked) updateKeyboardDefaults();
+        },
+
+        downloadConfig() {
+            updateCustomDictFromUI();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(state.customDict, null, 2)], { type: "application/json" }));
+            a.download = "musescore_piano_config.json";
+            a.click();
+        },
+
+        importConfig(input) {
+            if (!input.files.length) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loaded = JSON.parse(e.target.result);
+                    if (!loaded.major || !loaded.minor) {
+                        alert("不正な形式のファイルです。新しく設定を作り直してください。");
+                        return;
+                    }
+                    state.customDict = loaded;
+                    for (const [id, val] of Object.entries(loaded.major)) { const el = $(id); if (el) el.value = val; }
+                    for (const [id, val] of Object.entries(loaded.minor)) { const el = $(id); if (el) el.value = val; }
+                    showStatus('green', 'カスタム設定を読み込みました');
+                } catch (err) {
+                    showStatus('red', '読込失敗: ' + err.message);
+                }
+                input.value = "";
+            };
+            reader.readAsText(input.files[0]);
+        },
+
+        handleFile,
+        execute,
+    };
+})();
+
+// --- イベントバインド ---
+document.addEventListener('DOMContentLoaded', () => {
+    const dz = document.getElementById('dropZone');
+    const fi = document.getElementById('fileInput');
+
+    dz.addEventListener('click', () => fi.click());
+    dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('dragover'); App.handleFile(e.dataTransfer.files[0]); });
+    fi.addEventListener('change', (e) => App.handleFile(e.target.files[0]));
+
+    document.getElementById('execBtn').addEventListener('click', App.execute);
+
+    // ラジオボタン変更時にカスタム鍵盤を更新
+    document.querySelectorAll('input[name="solfegeSystem"], input[name="namingStyle"]').forEach(el => {
+        el.addEventListener('change', () => {
+            if (document.getElementById('useCustomMap').checked) {
+                // updateKeyboardDefaults は App 内部なので toggleCustomMap を再トリガー
+                App.toggleCustomMap();
+                document.getElementById('useCustomMap').checked = true;
+            }
+        });
+    });
+});
 </script>
 </body>
 </html>

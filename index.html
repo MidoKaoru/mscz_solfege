@@ -599,6 +599,7 @@ const App = (() => {
                 const staff = musicStaves[idx];
                 let prevAcc = null, currAcc = 0, prevSyl = null, tied = false, pivot = false;
                 let slurDepth = 0;
+                let needsOutputAfterTie = false;
 
                 const measures = staff.getElementsByTagName('Measure');
                 for (let m = 0; m < measures.length; m++) {
@@ -640,22 +641,35 @@ const App = (() => {
                         let txt = syl;
                         let doOutput = false;
                         const isContinuous = tied || isMelismaCont;
+                        const isMeasureStart = (c === 0);
 
                         if (pivot && !isContinuous) {
                             const prevMinor = userConfigs[Math.max(0, modIdx - 1)];
                             txt = `(${resolveSolfege(tpc, prevAcc, prevMinor, activeDict)}→)${syl}`;
                             doOutput = true;
                             pivot = false;
+                            needsOutputAfterTie = false;
                         } else if (isContinuous) {
                             txt = (syl === prevSyl) ? "＿" : `(${syl})`;
                             doOutput = true;
+                            // 小節頭がタイ/スラーで続いていた場合はフラグを立てる
+                            if (isMeasureStart) needsOutputAfterTie = true;
                         } else {
                             if (prevSyl === null) {
                                 doOutput = true;
+                                needsOutputAfterTie = false;
                             } else if (syl === prevSyl) {
-                                doOutput = (repeatStyle === 'always');
+                                // 条件1: 小節頭かつ非連続 → 同じ階名でも必ず出力
+                                // 条件2: タイ/スラーが外れた最初の音 → 必ず出力
+                                if (isMeasureStart || needsOutputAfterTie) {
+                                    doOutput = true;
+                                    needsOutputAfterTie = false;
+                                } else {
+                                    doOutput = (repeatStyle === 'always');
+                                }
                             } else {
                                 doOutput = true;
+                                needsOutputAfterTie = false;
                             }
                         }
 

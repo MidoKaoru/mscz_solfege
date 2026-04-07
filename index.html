@@ -503,7 +503,9 @@ const App = (() => {
             const containerXml = new DOMParser().parseFromString(
                 await containerFile.async("string"), "text/xml"
             );
-            const rootFile = containerXml.getElementsByTagName("rootfile")[0];
+            const allRootFiles = Array.from(containerXml.getElementsByTagName("rootfile"));
+            const rootFile = allRootFiles.find(rf => rf.getAttribute("full-path")?.endsWith(".mscx"))
+                           || allRootFiles[0];
             if (!rootFile) throw new Error("container.xml 内に rootfile が見つかりません。");
 
             state.mscxPath = rootFile.getAttribute("full-path");

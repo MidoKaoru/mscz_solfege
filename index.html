@@ -550,7 +550,7 @@ const App = (() => {
             let lastAcc = null;
             for (let m = 0; m < measures.length; m++) {
                 const ks = measures[m].getElementsByTagName('KeySig')[0];
-                const accEl = ks ? ks.getElementsByTagName('accidental')[0] : null;
+                const accEl = ks ? (ks.getElementsByTagName('accidental')[0] || ks.getElementsByTagName('concertKey')[0]) : null;
                 const acc = accEl ? parseInt(accEl.textContent || "0") : (m === 0 ? 0 : null);
                 if (acc !== null && acc !== lastAcc) {
                     lastAcc = acc;
@@ -610,7 +610,7 @@ const App = (() => {
 
                     const ks = measures[m].getElementsByTagName('KeySig')[0];
                     if (ks) {
-                        const accEl = ks.getElementsByTagName('accidental')[0];
+                        const accEl = ks.getElementsByTagName('accidental')[0] || ks.getElementsByTagName('concertKey')[0];
                         const acc = parseInt(accEl?.textContent || "0");
                         if (acc !== currAcc) { prevAcc = currAcc; currAcc = acc; pivot = (m > 0); }
                     }

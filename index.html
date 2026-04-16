@@ -226,6 +226,7 @@
  *   5. LastEID の自動更新
  *   6. TPC 値の範囲チェック追加
  *   7. MuseScore バージョンの検出と表示
+ *   8. 異名同音フォールバック: TPC でマップ未ヒット時にピッチクラスで再解決
  */
 const App = (() => {
     // --- 状態管理 ---
@@ -407,13 +408,32 @@ const App = (() => {
         return ranges.some(r => num >= r.start && num <= r.end);
     }
 
+    // --- TPC → ピッチクラス変換テーブル ---
+    // インデックス = tpc + 1 (tpc=-1 から tpc=33 まで対応)
+    const TPC_TO_PC = [5,0,7,2,9,4,11,6,1,8,3,10,5,0,7,2,9,4,11,6,1,8,3,10,5,0,7,2,9,4,11,6,1,8,3];
+
     // --- 階名解決 ---
     function resolveSolfege(tpc, accidentals, isMinor, activeDict) {
         const rootTpc = isMinor ? (14 + accidentals + 3) : (14 + accidentals);
         const diff = tpc - rootTpc;
         const map = isMinor ? distToUIMinor : distToUIMajor;
         const dict = isMinor ? activeDict.minor : activeDict.major;
-        const uiId = map[diff];
+
+        // 通常の TPC ベース解決
+        let uiId = map[diff];
+
+        // 未ヒット時：ピッチクラスが一致するエントリで異名同音フォールバック
+        if (!uiId) {
+            const targetPc = TPC_TO_PC[tpc + 1];
+            for (const [d, id] of Object.entries(map)) {
+                const candidateTpc = rootTpc + Number(d);
+                if (TPC_TO_PC[candidateTpc + 1] === targetPc) {
+                    uiId = id;
+                    break;
+                }
+            }
+        }
+
         return uiId ? (dict[uiId] || "?") : "?";
     }
 
